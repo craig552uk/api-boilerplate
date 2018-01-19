@@ -5,6 +5,7 @@ import * as bodyParser from "body-parser";
 import * as express from "express";
 import { NextFunction, Request, Response, Router } from "express";
 import { HttpError, InternalServerError, NotFound } from "http-errors";
+import { LoggerMiddleware } from "../middleware/logger.middleware";
 import { LoggerService } from "./logger.service";
 
 const logger = LoggerService.getInstance();
@@ -25,6 +26,9 @@ export class ApplicationService {
         // Parse JSON or URL encoded data in the request body
         this.instance.use(bodyParser.json());
         this.instance.use(bodyParser.urlencoded({ extended: true }));
+
+        // Log all HTTP Requests
+        this.instance.use(LoggerMiddleware);
 
         // Hello World route
         this.instance.get("/", (req, res) => res.send("Hello World"));
