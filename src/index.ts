@@ -1,9 +1,11 @@
 import * as Express from "express";
+import { argv } from "yargs";
 
 const app = Express();
 
-const HOST = "0.0.0.0";
-const PORT = 1337;
+// Get CLI arguments
+const HOST = argv.host || "0.0.0.0";
+const PORT = argv.port || 1337;
 
 app.get("/", (req, res) => res.send("Hello World"));
 
