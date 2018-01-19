@@ -6,6 +6,7 @@ import * as express from "express";
 import { NextFunction, Request, Response, Router } from "express";
 import { HttpError, InternalServerError, NotFound } from "http-errors";
 import { LoggerMiddleware } from "../middleware/logger.middleware";
+import * as ApplicationRoutes from "../route";
 import { LoggerService } from "./logger.service";
 
 const logger = LoggerService.getInstance();
@@ -30,8 +31,8 @@ export class ApplicationService {
         // Log all HTTP Requests
         this.instance.use(LoggerMiddleware);
 
-        // Hello World route
-        this.instance.get("/", (req, res) => res.send("Hello World"));
+        // Apply all Application Routes
+        this.instance.use(ApplicationRoutes);
 
         // 404 Not Found
         // If no previous route handler has matched the request, this one is called
