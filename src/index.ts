@@ -1,4 +1,3 @@
-import * as Express from "express";
 import { argv } from "yargs";
 import { ApplicationService } from "./lib/application.service";
 import { LoggerService } from "./lib/logger.service";
