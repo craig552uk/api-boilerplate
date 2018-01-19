@@ -7,6 +7,6 @@ RUN npm install
 RUN npm install typescript
 RUN tsc
 
-EXPOSE 1337
+EXPOSE 8000
 
-CMD [ "node", "index.js" ]
+CMD [ "node", "index.js", "--port", "8000" ]
