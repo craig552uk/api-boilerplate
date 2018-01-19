@@ -17,6 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "bunyan": "^1.8.12",
+    "email-validator": "^1.1.1",
     "express": "^4.16.2",
     "yargs": "^10.1.1"
   },
