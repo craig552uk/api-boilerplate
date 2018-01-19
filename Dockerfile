@@ -6,7 +6,7 @@ COPY . .
 ENV LOG_LEVEL=trace
 
 RUN npm install
-RUN npm install typescript
+RUN npm install --global typescript
 RUN tsc
 
 EXPOSE 8000
