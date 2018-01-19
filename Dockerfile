@@ -3,6 +3,8 @@ FROM node:latest
 WORKDIR /app
 COPY . .
 
+ENV LOG_LEVEL=trace
+
 RUN npm install
 RUN npm install typescript
 RUN tsc
