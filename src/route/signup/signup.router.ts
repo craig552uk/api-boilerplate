@@ -4,6 +4,7 @@ import { Router } from "express";
 import { BadRequest } from "http-errors";
 import { LoggerService } from "../../lib/logger.service";
 import { Customer } from "../../model/customer.model";
+import { User } from "../../model/user.model";
 
 const logger = LoggerService.getInstance();
 
@@ -26,13 +27,25 @@ router.post("/signup", (req, res, next) => {
     // Create Customer with default configuration
     new Customer({ name: "foo" }).save()
         .then((customer) => {
-            logger.info({ customer }, "Created new Customer");
+            logger.debug({ customer }, "Created new Customer");
 
-            // TODO #11 Create User with admin privilages
-            // TODO #12 Generate JWT for User
+            // Create User with admin privilages
+            const userData = {
+                customerId: customer._id,
+                isAdmin: true,
+                login: req.body.login,
+                password: "Passw0rd", // TODO #14 New User must set password
+            };
 
-            // Return JWT
-            res.json({ token: "foo", type: "jwt" });
+            return new User(userData).save()
+                .then((user) => {
+                    logger.debug({ user }, "Created new User");
+
+                    // TODO #12 Generate JWT for User
+
+                    // Return JWT
+                    res.json({ token: "foo", type: "jwt" });
+                });
         })
         .catch(next);
 });

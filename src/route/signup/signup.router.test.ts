@@ -3,6 +3,7 @@ import * as Faker from "faker";
 import "mocha";
 import * as supertest from "supertest";
 import { Customer } from "../../model/customer.model";
+import { User } from "../../model/user.model";
 import { dbConnect, dbDisconnect, testApplication as app } from "../../testrunner";
 
 describe("Sign Up API routes", () => {
@@ -86,7 +87,19 @@ describe("Sign Up API routes", () => {
             assert.equal(beforeCount + 1, afterCount);
         });
 
-        xit("should create a new User with admin privilages");
+        it("should create a new User with admin privilages", async () => {
+            const payload = {
+                login: Faker.internet.email(),
+                name: Faker.name.findName(),
+                organisationName: Faker.company.companyName(),
+            };
+
+            const beforeCount = await User.count({});
+            const response = await app.post("/signup").send(payload);
+
+            const afterCount = await User.count({});
+            assert.equal(beforeCount + 1, afterCount);
+        });
 
         xit("should return 200 with JWT after creating Customer and User ");
     });
