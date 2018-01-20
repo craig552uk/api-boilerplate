@@ -21,8 +21,16 @@ router.post("/signup", (req, res, next) => {
     // Validated submitted data
     if (!req.body.name) { throw new BadRequest("You must provide a name"); }
     if (!req.body.login) { throw new BadRequest("You must provide a login"); }
+    if (!req.body.password1) { throw new BadRequest("You must provide a password"); }
+    if (!req.body.password2) { throw new BadRequest("You must provide your password twice"); }
     if (!req.body.organisationName) { throw new BadRequest("You must provide an organisation name"); }
     if (!EmailValidator.validate(req.body.login)) { throw new BadRequest("Your login must be an email address"); }
+    if (req.body.password1 !== req.body.password2) { throw new BadRequest("Your passwords do not match"); }
+
+    // Password policy
+    if (!req.body.password1.match(/^[a-z-A-Z0-9$@$!%*?&]{8,}$/)) {
+        throw new BadRequest("Password must be at least 8 characters and may only use a-z, A-Z, 0-9 and $@$!%*?&");
+    }
 
     // Create Customer with default configuration
     new Customer({ name: req.body.organisationName }).save()
@@ -35,7 +43,7 @@ router.post("/signup", (req, res, next) => {
                 customerId: customer._id,
                 login: req.body.login,
                 name: req.body.name,
-                password: "Passw0rd", // TODO #14 New User must set password
+                password: req.body.password1,
             };
 
             return new User(userData).save()

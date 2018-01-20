@@ -19,6 +19,8 @@ describe("Sign Up API routes", () => {
             const payload = {
                 login: Faker.internet.email(),
                 organisationName: Faker.company.companyName(),
+                password1: "Passw0rd",
+                password2: "Passw0rd",
             };
 
             app.post("/signup")
@@ -33,6 +35,8 @@ describe("Sign Up API routes", () => {
             const payload = {
                 name: Faker.name.findName(),
                 organisationName: Faker.company.companyName(),
+                password1: "Passw0rd",
+                password2: "Passw0rd",
             };
 
             app.post("/signup")
@@ -43,10 +47,44 @@ describe("Sign Up API routes", () => {
                 .end(done);
         });
 
+        it("should return 400 `Bad Request` if password is not provided", (done) => {
+            const payload = {
+                login: Faker.internet.email(),
+                name: Faker.name.findName(),
+                organisationName: Faker.company.companyName(),
+                password2: "Passw0rd",
+            };
+
+            app.post("/signup")
+                .send(payload)
+                .expect(400)
+                .expect("content-type", /json/)
+                .expect({ message: "You must provide a password" })
+                .end(done);
+        });
+
+        it("should return 400 `Bad Request` if password confirmation is not provided", (done) => {
+            const payload = {
+                login: Faker.internet.email(),
+                name: Faker.name.findName(),
+                organisationName: Faker.company.companyName(),
+                password1: "Passw0rd",
+            };
+
+            app.post("/signup")
+                .send(payload)
+                .expect(400)
+                .expect("content-type", /json/)
+                .expect({ message: "You must provide your password twice" })
+                .end(done);
+        });
+
         it("should return 400 `Bad Request` if organisation name is not provided", (done) => {
             const payload = {
                 login: Faker.internet.email(),
                 name: Faker.name.findName(),
+                password1: "Passw0rd",
+                password2: "Passw0rd",
             };
 
             app.post("/signup")
@@ -62,6 +100,8 @@ describe("Sign Up API routes", () => {
                 login: Faker.lorem.words(),
                 name: Faker.name.findName(),
                 organisationName: Faker.company.companyName(),
+                password1: "Passw0rd",
+                password2: "Passw0rd",
             };
 
             app.post("/signup")
@@ -72,6 +112,42 @@ describe("Sign Up API routes", () => {
                 .end(done);
         });
 
+        it("should return 400 `Bad Request` if passwords do not match", (done) => {
+            const payload = {
+                login: Faker.internet.email(),
+                name: Faker.name.findName(),
+                organisationName: Faker.company.companyName(),
+                password1: "Passw0rd1",
+                password2: "Passw0rd2",
+            };
+
+            app.post("/signup")
+                .send(payload)
+                .expect(400)
+                .expect("content-type", /json/)
+                .expect({ message: "Your passwords do not match" })
+                .end(done);
+        });
+
+        it("should return 400 `Bad Request` if password is too short", (done) => {
+            const payload = {
+                login: Faker.internet.email(),
+                name: Faker.name.findName(),
+                organisationName: Faker.company.companyName(),
+                password1: "Passw0r",
+                password2: "Passw0r",
+            };
+
+            app.post("/signup")
+                .send(payload)
+                .expect(400)
+                .expect("content-type", /json/)
+                .expect({
+                    message: "Password must be at least 8 characters and may only use a-z, A-Z, 0-9 and $@$!%*?&",
+                })
+                .end(done);
+        });
+
         xit("should return 400 `Bad Request` if login email has been used");
 
         it("should create a new Customer with default settings", async () => {
@@ -79,6 +155,8 @@ describe("Sign Up API routes", () => {
                 login: Faker.internet.email(),
                 name: Faker.name.findName(),
                 organisationName: Faker.company.companyName(),
+                password1: "Passw0rd",
+                password2: "Passw0rd",
             };
 
             const beforeCount = await Customer.count({});
@@ -93,6 +171,8 @@ describe("Sign Up API routes", () => {
                 login: Faker.internet.email(),
                 name: Faker.name.findName(),
                 organisationName: Faker.company.companyName(),
+                password1: "Passw0rd",
+                password2: "Passw0rd",
             };
 
             const beforeCount = await User.count({});
@@ -107,6 +187,8 @@ describe("Sign Up API routes", () => {
                 login: Faker.internet.email(),
                 name: Faker.name.findName(),
                 organisationName: Faker.company.companyName(),
+                password1: "Passw0rd",
+                password2: "Passw0rd",
             };
 
             const response = await app.post("/signup").send(payload);
