@@ -1,3 +1,4 @@
+import * as bcrypt from "bcrypt";
 import * as mongoose from "mongoose";
 import * as JWTService from "../lib/jwt.service";
 
@@ -8,6 +9,7 @@ export interface IUser extends mongoose.Document {
     id: string;
     login: string;
     name: string;
+    password: string;
     root: boolean;
     type: "User";
     updatedAt: Date;
@@ -19,7 +21,7 @@ export const UserSchema = new mongoose.Schema(
     {
         admin: { type: Boolean, default: false },
         customerId: { type: mongoose.Schema.Types.ObjectId, required: true },
-        login: { type: String, required: true },
+        login: { type: String, required: true, index: { unique: true } },
         name: { type: String, required: true },
         password: { type: String, required: true },
         root: { type: Boolean, default: false },
@@ -38,6 +40,30 @@ export const UserSchema = new mongoose.Schema(
         },
 
     });
+
+/**
+ * Securely hash passwords before saving in DB
+ */
+UserSchema.pre("save", function save(next): void {
+    const user: IUser = this;
+
+    // Only hash the password if it has been modified (or is new)
+    if (!user.isModified("password")) { return next(); }
+
+    // Hash the password
+    bcrypt.genSalt(10)
+        .then((salt) => bcrypt.hash(user.password, salt))
+        .then((hash) => user.password = hash)
+        .then(() => next())
+        .catch(next);
+});
+
+/**
+ * Check a submitted password against this User
+ */
+UserSchema.methods.checkPassword = function checkPassword(candidatePassword: string): Promise<boolean> {
+    return bcrypt.compare(candidatePassword, this.password);
+};
 
 /**
  * Get a JWT token for this User

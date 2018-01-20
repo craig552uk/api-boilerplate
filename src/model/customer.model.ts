@@ -10,6 +10,7 @@ export interface ICustomer extends mongoose.Document {
 
 export const CustomerSchema = new mongoose.Schema(
     {
+        email: { type: String, required: true, index: { unique: true } },
         name: { type: String, required: true },
     },
     {

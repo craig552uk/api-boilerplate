@@ -33,7 +33,12 @@ router.post("/signup", (req, res, next) => {
     }
 
     // Create Customer with default configuration
-    new Customer({ name: req.body.organisationName }).save()
+    const customerData = {
+        email: req.body.login,
+        name: req.body.organisationName,
+    };
+
+    new Customer(customerData).save()
         .then((customer) => {
             logger.debug({ customer }, "Created new Customer");
 
@@ -55,6 +60,12 @@ router.post("/signup", (req, res, next) => {
                     // Generate and return new JWT for User
                     res.json({ token: user.getJWT(), type: "jwt" });
                 });
+        })
+        .catch((err) => {
+            if (err.message.match(/^E11000/)) { // Mongo 'duplicate key error'
+                throw new BadRequest("That email is already taken");
+            }
+            throw err;
         })
         .catch(next);
 });

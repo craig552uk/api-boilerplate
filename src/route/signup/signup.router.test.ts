@@ -148,7 +148,23 @@ describe("Sign Up API routes", () => {
                 .end(done);
         });
 
-        xit("should return 400 `Bad Request` if login email has been used");
+        it("should return 400 `Bad Request` if login email has been used", async () => {
+            const payload = {
+                login: Faker.internet.email(),
+                name: Faker.name.findName(),
+                organisationName: Faker.company.companyName(),
+                password1: "Passw0rd",
+                password2: "Passw0rd",
+            };
+
+            await app.post("/signup").send(payload);
+
+            await app.post("/signup")
+                .send(payload)
+                .expect(400)
+                .expect("content-type", /json/)
+                .expect({ message: "That email is already taken" });
+        });
 
         it("should create a new Customer with default settings", async () => {
             const payload = {
