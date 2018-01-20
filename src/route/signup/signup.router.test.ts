@@ -1,4 +1,5 @@
 import * as assert from "assert";
+import * as Faker from "faker";
 import "mocha";
 import * as supertest from "supertest";
 import { Customer } from "../../model/customer.model";
@@ -14,9 +15,8 @@ describe("Sign Up API routes", () => {
 
         it("should return 400 `Bad Request` if name is not provided", (done) => {
             const payload = {
-                login: "foo@bar.com",
-                // name: "Foo Bar",
-                organisationName: "Foo Bar ltd.",
+                login: Faker.internet.email(),
+                organisationName: Faker.company.companyName(),
             };
 
             app.post("/signup")
@@ -29,9 +29,8 @@ describe("Sign Up API routes", () => {
 
         it("should return 400 `Bad Request` if login is not provided", (done) => {
             const payload = {
-                // login: "foo@bar.com",
-                name: "Foo Bar",
-                organisationName: "Foo Bar ltd.",
+                name: Faker.name.findName(),
+                organisationName: Faker.company.companyName(),
             };
 
             app.post("/signup")
@@ -44,9 +43,8 @@ describe("Sign Up API routes", () => {
 
         it("should return 400 `Bad Request` if organisation name is not provided", (done) => {
             const payload = {
-                login: "foo@bar.com",
-                name: "Foo Bar",
-                // organisationName: "Foo Bar ltd.",
+                login: Faker.internet.email(),
+                name: Faker.name.findName(),
             };
 
             app.post("/signup")
@@ -59,9 +57,9 @@ describe("Sign Up API routes", () => {
 
         it("should return 400 `Bad Request` if login is not an email address", (done) => {
             const payload = {
-                login: "foobarcom",
-                name: "Foo Bar",
-                organisationName: "Foo Bar ltd.",
+                login: Faker.lorem.words(),
+                name: Faker.name.findName(),
+                organisationName: Faker.company.companyName(),
             };
 
             app.post("/signup")
@@ -76,9 +74,9 @@ describe("Sign Up API routes", () => {
 
         it("should create a new Customer with default settings", async () => {
             const payload = {
-                login: "foo@bar.com",
-                name: "Foo Bar",
-                organisationName: "Foo Bar ltd.",
+                login: Faker.internet.email(),
+                name: Faker.name.findName(),
+                organisationName: Faker.company.companyName(),
             };
 
             const beforeCount = await Customer.count({});
