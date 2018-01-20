@@ -2,6 +2,7 @@ import * as assert from "assert";
 import * as Faker from "faker";
 import "mocha";
 import * as supertest from "supertest";
+import * as JWTService from "../../lib/jwt.service";
 import { Customer } from "../../model/customer.model";
 import { User } from "../../model/user.model";
 import { dbConnect, dbDisconnect, testApplication as app } from "../../testrunner";
@@ -110,8 +111,8 @@ describe("Sign Up API routes", () => {
 
             const response = await app.post("/signup").send(payload);
 
-            console.log(response.body);
-            assert.ok(response.body);
+            assert.ok(JWTService.verify(response.body.token));
+            assert.equal(response.body.type, "jwt");
         });
     });
 });
