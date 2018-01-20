@@ -25,15 +25,16 @@ router.post("/signup", (req, res, next) => {
     if (!EmailValidator.validate(req.body.login)) { throw new BadRequest("Your login must be an email address"); }
 
     // Create Customer with default configuration
-    new Customer({ name: "foo" }).save()
+    new Customer({ name: req.body.organisationName }).save()
         .then((customer) => {
             logger.debug({ customer }, "Created new Customer");
 
             // Create User with admin privilages
             const userData = {
+                admin: true,
                 customerId: customer._id,
-                isAdmin: true,
                 login: req.body.login,
+                name: req.body.name,
                 password: "Passw0rd", // TODO #14 New User must set password
             };
 
@@ -41,10 +42,10 @@ router.post("/signup", (req, res, next) => {
                 .then((user) => {
                     logger.debug({ user }, "Created new User");
 
-                    // TODO #12 Generate JWT for User
+                    // TODO #15 Send new user emails
 
-                    // Return JWT
-                    res.json({ token: "foo", type: "jwt" });
+                    // Generate and return new JWT for User
+                    res.json({ token: user.getJWT(), type: "jwt" });
                 });
         })
         .catch(next);

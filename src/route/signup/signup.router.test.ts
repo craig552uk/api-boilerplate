@@ -101,6 +101,17 @@ describe("Sign Up API routes", () => {
             assert.equal(beforeCount + 1, afterCount);
         });
 
-        xit("should return 200 with JWT after creating Customer and User ");
+        it("should return 200 with JWT after creating Customer and User", async () => {
+            const payload = {
+                login: Faker.internet.email(),
+                name: Faker.name.findName(),
+                organisationName: Faker.company.companyName(),
+            };
+
+            const response = await app.post("/signup").send(payload);
+
+            console.log(response.body);
+            assert.ok(response.body);
+        });
     });
 });
