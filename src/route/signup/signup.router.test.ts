@@ -157,7 +157,10 @@ describe("Sign Up API routes", () => {
                 password2: "Passw0rd",
             };
 
-            await app.post("/signup").send(payload);
+            await app.post("/signup")
+                .send(payload)
+                .expect(200)
+                .expect("content-type", /json/);
 
             await app.post("/signup")
                 .send(payload)
