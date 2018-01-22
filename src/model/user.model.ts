@@ -14,6 +14,7 @@ export interface IUser extends mongoose.Document {
     type: "User";
     updatedAt: Date;
 
+    checkPassword(candidatePassword: string): boolean;
     getJWT(): string;
 }
 
@@ -38,14 +39,13 @@ export const UserSchema = new mongoose.Schema(
                 return ret;
             },
         },
-
     });
 
 /**
  * Securely hash passwords before saving in DB
  */
-UserSchema.pre("save", function save(next): void {
-    const user: IUser = this;
+UserSchema.pre("save", function save(this: IUser, next): void {
+    const user = this;
 
     // Only hash the password if it has been modified (or is new)
     if (!user.isModified("password")) { return next(); }
@@ -61,8 +61,8 @@ UserSchema.pre("save", function save(next): void {
 /**
  * Check a submitted password against this User
  */
-UserSchema.methods.checkPassword = function checkPassword(candidatePassword: string): Promise<boolean> {
-    return bcrypt.compare(candidatePassword, this.password);
+UserSchema.methods.checkPassword = function checkPassword(candidatePassword: string): boolean {
+    return bcrypt.compareSync(candidatePassword, this.password);
 };
 
 /**
