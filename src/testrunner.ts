@@ -23,21 +23,19 @@ export const reTimestamp = /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{
 export const testApplication = supertest(ApplicationService.getInstance()) as supertest.SuperTest<supertest.Test>;
 
 /**
- * Connect to Mongo DB and drop entire database
- * @param done Mocha "done" callback
+ * Connect to Mongo DB and drop entire database before running tests
  */
-export function dbConnect(done: MochaDone) {
+before((done: MochaDone) => {
     mongoose.connect(DBURL)
         .then(() => mongoose.connection.db.dropDatabase())
         .then(() => done())
         .catch(done);
-}
+});
 
 /**
- * Disconnect form Mongo DB
- * @param done Mocha "done" callback
+ * Disconnect from Mongo DB once all tests are finished
  */
-export function dbDisconnect(done: MochaDone) {
+after((done: MochaDone) => {
     mongoose.disconnect();
     done();
-}
+});

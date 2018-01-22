@@ -5,15 +5,11 @@ import * as supertest from "supertest";
 import * as JWTService from "../../lib/jwt.service";
 import { Customer } from "../../model/customer.model";
 import { User } from "../../model/user.model";
-import { dbConnect, dbDisconnect, testApplication as app } from "../../testrunner";
+import { testApplication as app } from "../../testrunner";
 
 describe("Sign Up API routes", () => {
 
     describe("POST /signup", () => {
-
-        before(dbConnect);
-
-        after(dbDisconnect);
 
         it("should return 400 `Bad Request` if name is not provided", (done) => {
             const payload = {

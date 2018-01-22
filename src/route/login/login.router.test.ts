@@ -5,13 +5,9 @@ import * as supertest from "supertest";
 import * as JWTService from "../../lib/jwt.service";
 import { Customer } from "../../model/customer.model";
 import { User } from "../../model/user.model";
-import { dbConnect, dbDisconnect, testApplication as app } from "../../testrunner";
+import { testApplication as app } from "../../testrunner";
 
 describe("Authentication API routes", () => {
-
-    before(dbConnect);
-
-    after(dbDisconnect);
 
     describe("GET /login", () => {
         xit("should return 400 `Bad Request` if Authorization header not provided");
