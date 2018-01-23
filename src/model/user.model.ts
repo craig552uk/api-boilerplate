@@ -50,6 +50,11 @@ UserSchema.pre("save", function save(this: IUser, next): void {
     // Only hash the password if it has been modified (or is new)
     if (!user.isModified("password")) { return next(); }
 
+    // Password policy
+    if (!user.password.match(/^[a-z-A-Z0-9$@$!%*?&]{8,}$/)) {
+        throw Error("Password must be at least 8 characters and may only use a-z, A-Z, 0-9 and $@$!%*?&");
+    }
+
     // Hash the password
     bcrypt.genSalt(10)
         .then((salt) => bcrypt.hash(user.password, salt))

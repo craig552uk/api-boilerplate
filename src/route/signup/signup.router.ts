@@ -27,11 +27,6 @@ router.post("/signup", (req, res, next) => {
     if (!EmailValidator.validate(req.body.login)) { throw new BadRequest("Your login must be an email address"); }
     if (req.body.password1 !== req.body.password2) { throw new BadRequest("Your passwords do not match"); }
 
-    // Password policy
-    if (!req.body.password1.match(/^[a-z-A-Z0-9$@$!%*?&]{8,}$/)) {
-        throw new BadRequest("Password must be at least 8 characters and may only use a-z, A-Z, 0-9 and $@$!%*?&");
-    }
-
     // Create Customer with default configuration
     const customerData = {
         email: req.body.login,
@@ -64,6 +59,9 @@ router.post("/signup", (req, res, next) => {
         .catch((err) => {
             if (err.message.match(/^E11000/)) { // Mongo 'duplicate key error'
                 throw new BadRequest("That email is already taken");
+            }
+            if (err.message.match(/password/i)) { // Invalid password
+                throw new BadRequest(err.message);
             }
             throw err;
         })
