@@ -8,7 +8,7 @@ import { IUser, User } from "../../model/user.model";
 import { testApplication as app } from "../../testrunner";
 
 const LOGIN = Faker.internet.email();
-const PASSWORD = Faker.internet.password(10);
+const PASSWORD = "Passw0rd";
 let customer: ICustomer;
 let user: IUser;
 
