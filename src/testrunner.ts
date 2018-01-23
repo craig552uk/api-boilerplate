@@ -1,6 +1,7 @@
 // Silence logger
 process.env.LOG_LEVEL = "fatal";
 
+import * as Faker from "faker";
 import "mocha";
 import * as mongoose from "mongoose";
 import "reflect-metadata";
@@ -8,7 +9,8 @@ import * as supertest from "supertest";
 import { ApplicationService } from "./lib/application.service";
 
 // DB Connection URL
-const DBURL = process.env.DBURL || "mongodb://localhost:27017/testrunner";
+const randName = Faker.lorem.words().replace(/ /g, "-");
+const DBURL = process.env.DBURL || `mongodb://localhost:27017/${randName}`;
 
 // Use native promises in Mongoose
 (mongoose as any).Promise = global.Promise;
@@ -28,7 +30,10 @@ export const testApplication = supertest(ApplicationService.getInstance()) as su
 before((done: MochaDone) => {
     mongoose.connect(DBURL)
         .then(() => mongoose.connection.db.dropDatabase())
-        .then(() => done())
+        .then(() => {
+            console.log(`> Connect to MongoDB ${DBURL}\n`);
+            done();
+        })
         .catch(done);
 });
 
@@ -37,5 +42,6 @@ before((done: MochaDone) => {
  */
 after((done: MochaDone) => {
     mongoose.disconnect();
+    console.log("> Disconnected from MongoDB");
     done();
 });
