@@ -67,6 +67,7 @@ UserSchema.pre("save", function save(this: IUser, next): void {
  * Check a submitted password against this User
  */
 UserSchema.methods.checkPassword = function checkPassword(candidatePassword: string): boolean {
+    candidatePassword = candidatePassword || "";
     return bcrypt.compareSync(candidatePassword, this.password);
 };
 
