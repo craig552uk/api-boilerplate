@@ -43,38 +43,190 @@ describe("Settings API routes", () => {
     });
 
     describe("GET /users", () => {
-        xit("Should deny non-admin Users");
+        it("should return 401 `Unauthorized` if current User is not admin", (done) => {
+            app.get("/users")
+                .set("authorization", `Bearer ${userToken}`)
+                .expect("content-type", /json/)
+                .expect(401)
+                .end(done);
+        });
+
         xit("Should return all Users for this Customer");
     });
 
     describe("POST /users", () => {
-        xit("Should deny non-admin Users");
-        xit("Should return 400 `Bad Request` if name not provided");
-        xit("Should return 400 `Bad Request` if login not provided");
-        xit("Should return 400 `Bad Request` if password not provided");
-        xit("Should return 400 `Bad Request` if login is not an email address");
+        it("should return 401 `Unauthorized` if current User is not admin", (done) => {
+            app.post("/users")
+                .set("authorization", `Bearer ${userToken}`)
+                .expect("content-type", /json/)
+                .expect(401)
+                .end(done);
+        });
+
+        it("Should return 400 `Bad Request` if name not provided", (done) => {
+            const data = {
+                login: Faker.internet.email(),
+                password: "Passw0rd",
+            };
+
+            app.post("/users")
+                .send(data)
+                .set("authorization", `Bearer ${adminToken}`)
+                .expect("content-type", /json/)
+                .expect(400)
+                .end(done);
+        });
+
+        it("Should return 400 `Bad Request` if login not provided", (done) => {
+            const data = {
+                name: Faker.name.findName(),
+                password: "Passw0rd",
+            };
+
+            app.post("/users")
+                .send(data)
+                .set("authorization", `Bearer ${adminToken}`)
+                .expect("content-type", /json/)
+                .expect(400)
+                .end(done);
+        });
+
+        it("Should return 400 `Bad Request` if password not provided", (done) => {
+            const data = {
+                login: Faker.internet.email(),
+                name: Faker.name.findName(),
+            };
+
+            app.post("/users")
+                .send(data)
+                .set("authorization", `Bearer ${adminToken}`)
+                .expect("content-type", /json/)
+                .expect(400)
+                .end(done);
+        });
+
+        it("Should return 400 `Bad Request` if login is not an email address", (done) => {
+            const data = {
+                login: Faker.name.findName(),
+                name: Faker.name.findName(),
+                password: "Passw0rd",
+            };
+
+            app.post("/users")
+                .send(data)
+                .set("authorization", `Bearer ${adminToken}`)
+                .expect("content-type", /json/)
+                .expect(400)
+                .end(done);
+        });
+
         xit("Should create new User for this Customer");
     });
 
     describe("GET /users/:id", () => {
-        xit("Should deny non-admin Users");
-        xit("Should return 404 `Not Found` for non-existing id");
+        it("should return 401 `Unauthorized` if current User is not admin", (done) => {
+            app.get("/users/000000000000000000000000")
+                .set("authorization", `Bearer ${userToken}`)
+                .expect("content-type", /json/)
+                .expect(401)
+                .end(done);
+        });
+
+        it("Should return 404 `Not Found` for non-existing id", (done) => {
+            app.get("/users/000000000000000000000000")
+                .set("authorization", `Bearer ${adminToken}`)
+                .expect("content-type", /json/)
+                .expect(404)
+                .end(done);
+        });
+
         xit("Should return a single User");
     });
 
     describe("PATCH /users/:id", () => {
-        xit("Should deny non-admin Users");
-        xit("Should return 404 `Not Found` for non-existing id");
-        xit("Should return 400 `Bad Request` if name not provided");
-        xit("Should return 400 `Bad Request` if login not provided");
-        xit("Should return 400 `Bad Request` if login is not an email address");
+        it("should return 401 `Unauthorized` if current User is not admin", (done) => {
+            app.patch("/users/000000000000000000000000")
+                .set("authorization", `Bearer ${userToken}`)
+                .expect("content-type", /json/)
+                .expect(401)
+                .end(done);
+        });
+
+        it("Should return 400 `Bad Request` if name not provided", (done) => {
+            const data = {
+                login: Faker.internet.email(),
+            };
+
+            app.patch("/users/000000000000000000000000")
+                .send(data)
+                .set("authorization", `Bearer ${adminToken}`)
+                .expect("content-type", /json/)
+                .expect(400)
+                .end(done);
+        });
+
+        it("Should return 400 `Bad Request` if login not provided", (done) => {
+            const data = {
+                name: Faker.name.findName(),
+            };
+
+            app.patch("/users/000000000000000000000000")
+                .send(data)
+                .set("authorization", `Bearer ${adminToken}`)
+                .expect("content-type", /json/)
+                .expect(400)
+                .end(done);
+        });
+
+        it("Should return 400 `Bad Request` if login is not an email address", (done) => {
+            const data = {
+                login: Faker.name.findName(),
+                name: Faker.name.findName(),
+            };
+
+            app.patch("/users/000000000000000000000000")
+                .send(data)
+                .set("authorization", `Bearer ${adminToken}`)
+                .expect("content-type", /json/)
+                .expect(400)
+                .end(done);
+        });
+
+        it("Should return 404 `Not Found` for non-existing id", (done) => {
+            const data = {
+                login: Faker.internet.email(),
+                name: Faker.name.findName(),
+            };
+
+            app.patch("/users/000000000000000000000000")
+                .send(data)
+                .set("authorization", `Bearer ${adminToken}`)
+                .expect("content-type", /json/)
+                .expect(404)
+                .end(done);
+        });
+
         xit("Should update User (excluding password)");
         xit("Should update User (including password)");
     });
 
     describe("DELETE /users/:id", () => {
-        xit("Should deny non-admin Users");
-        xit("Should return 404 `Not Found` for non-existing id");
+        it("should return 401 `Unauthorized` if current User is not admin", (done) => {
+            app.delete("/users/000000000000000000000000")
+                .set("authorization", `Bearer ${userToken}`)
+                .expect("content-type", /json/)
+                .expect(401)
+                .end(done);
+        });
+
+        it("Should return 404 `Not Found` for non-existing id", (done) => {
+            app.delete("/users/000000000000000000000000")
+                .set("authorization", `Bearer ${adminToken}`)
+                .expect("content-type", /json/)
+                .expect(404)
+                .end(done);
+        });
+
         xit("Should delete User");
     });
 });
