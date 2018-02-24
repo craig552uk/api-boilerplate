@@ -47,6 +47,8 @@ router.get("/profile", (req, res, next) => {
  * Update current User settings
  */
 router.patch("/profile", (req, res, next) => {
+    if (!req.body.name) { throw new BadRequest("You must provide a name"); }
+
     const data = {
         name: req.body.name,
     };
@@ -80,6 +82,7 @@ router.get("/account", (req, res, next) => {
  */
 router.patch("/account", (req, res, next) => {
     if (!req.jwt.admin) { throw new Unauthorized("Administrator access required"); }
+    if (!req.body.name) { throw new BadRequest("You must provide a name"); }
 
     const data = {
         name: req.body.name,
