@@ -47,17 +47,11 @@ router.get("/profile", (req, res, next) => {
  * Update current User settings
  */
 router.patch("/profile", (req, res, next) => {
-    // Can't update all fields
-    delete req.body.admin;
-    delete req.body.createdAt;
-    delete req.body.customerId;
-    delete req.body.id;
-    delete req.body.login;
-    delete req.body.password;
-    delete req.body.root;
-    delete req.body.updatedAt;
+    const data = {
+        name: req.body.name,
+    };
 
-    User.findOneAndUpdate({ _id: req.jwt.id }, req.body, { new: true })
+    User.findOneAndUpdate({ _id: req.jwt.id }, data, { new: true })
         .then((user) => {
             if (!user) { throw new Unauthorized("No User exists with that ID"); }
             res.json({ data: user });
@@ -87,13 +81,11 @@ router.get("/account", (req, res, next) => {
 router.patch("/account", (req, res, next) => {
     if (!req.jwt.admin) { throw new Unauthorized("Administrator access required"); }
 
-    // Can't update all fields
-    delete req.body.createdAt;
-    delete req.body.id;
-    delete req.body.type;
-    delete req.body.updatedAt;
+    const data = {
+        name: req.body.name,
+    };
 
-    Customer.findOneAndUpdate({ _id: req.jwt.cid }, req.body, { new: true })
+    Customer.findOneAndUpdate({ _id: req.jwt.cid }, data, { new: true })
         .then((customer) => {
             if (!customer) { throw new Unauthorized("No Customer exists with that ID"); }
             res.json({ data: customer });
