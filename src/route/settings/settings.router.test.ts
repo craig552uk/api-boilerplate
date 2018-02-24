@@ -196,68 +196,68 @@ describe("Settings API routes", () => {
                 .end(done);
         });
     });
-});
 
-describe("GET /settings/account", () => {
-    it("should return 401 `Unauthorized` if current User is not an admin", (done) => {
-        app.get("/settings/account")
-            .set("authorization", `Bearer ${userToken}`)
-            .expect("content-type", /json/)
-            .expect(401)
-            .end(done);
+    describe("GET /settings/account", () => {
+        it("should return 401 `Unauthorized` if current User is not an admin", (done) => {
+            app.get("/settings/account")
+                .set("authorization", `Bearer ${userToken}`)
+                .expect("content-type", /json/)
+                .expect(401)
+                .end(done);
+        });
+
+        it("should return settings for Customer if current User is an admin", (done) => {
+            app.get("/settings/account")
+                .set("authorization", `Bearer ${adminToken}`)
+                .expect(200)
+                .expect("content-type", /json/)
+                .expect((res: any) => {
+                    const customerJSON = JSON.parse(JSON.stringify(customer)) as ICustomer;
+                    assert.equal(customerJSON.createdAt, res.body.data.createdAt);
+                    assert.equal(customerJSON.id, res.body.data.id);
+                    assert.equal(customerJSON.name, res.body.data.name);
+                    assert.equal(customerJSON.type, res.body.data.type);
+                    assert.equal(customerJSON.updatedAt, res.body.data.updatedAt);
+                })
+                .end(done);
+        });
     });
 
-    it("should return settings for Customer if current User is an admin", (done) => {
-        app.get("/settings/account")
-            .set("authorization", `Bearer ${adminToken}`)
-            .expect(200)
-            .expect("content-type", /json/)
-            .expect((res: any) => {
-                const customerJSON = JSON.parse(JSON.stringify(customer)) as ICustomer;
-                assert.equal(customerJSON.createdAt, res.body.data.createdAt);
-                assert.equal(customerJSON.id, res.body.data.id);
-                assert.equal(customerJSON.name, res.body.data.name);
-                assert.equal(customerJSON.type, res.body.data.type);
-                assert.equal(customerJSON.updatedAt, res.body.data.updatedAt);
-            })
-            .end(done);
-    });
-});
+    describe("PATCH /settings/account", () => {
+        it("should return 401 `Unauthorized` if current User is not admin", (done) => {
+            app.patch("/settings/account")
+                .set("authorization", `Bearer ${userToken}`)
+                .expect("content-type", /json/)
+                .expect(401)
+                .end(done);
+        });
 
-describe("PATCH /settings/account", () => {
-    it("should return 401 `Unauthorized` if current User is not admin", (done) => {
-        app.patch("/settings/account")
-            .set("authorization", `Bearer ${userToken}`)
-            .expect("content-type", /json/)
-            .expect(401)
-            .end(done);
-    });
+        it("should return 200 `OK` if account successfully updated", (done) => {
+            const data = {
+                createdAt: new Date(),
+                id: Faker.random.uuid(),
+                name: Faker.company.companyName(),
+                updatedAt: new Date(),
+            };
 
-    it("should return 200 `OK` if account successfully updated", (done) => {
-        const data = {
-            createdAt: new Date(),
-            id: Faker.random.uuid(),
-            name: Faker.company.companyName(),
-            updatedAt: new Date(),
-        };
+            app.patch("/settings/account")
+                .set("authorization", `Bearer ${adminToken}`)
+                .send(data)
+                .expect(200)
+                .expect("content-type", /json/)
+                .expect((res: any) => {
+                    const customerJSON = JSON.parse(JSON.stringify(customer)) as ICustomer;
 
-        app.patch("/settings/account")
-            .set("authorization", `Bearer ${adminToken}`)
-            .send(data)
-            .expect(200)
-            .expect("content-type", /json/)
-            .expect((res: any) => {
-                const customerJSON = JSON.parse(JSON.stringify(customer)) as ICustomer;
+                    // Should update permitted fields
+                    assert.equal(data.name, res.body.data.name);
+                    assert.notEqual(customerJSON.updatedAt, res.body.data.updatedAt);
 
-                // Should update permitted fields
-                assert.equal(data.name, res.body.data.name);
-                assert.notEqual(customerJSON.updatedAt, res.body.data.updatedAt);
-
-                // Should not update other fields
-                assert.equal(customerJSON.createdAt, res.body.data.createdAt);
-                assert.equal(customerJSON.id, res.body.data.id);
-                assert.equal(customerJSON.type, res.body.data.type);
-            })
-            .end(done);
+                    // Should not update other fields
+                    assert.equal(customerJSON.createdAt, res.body.data.createdAt);
+                    assert.equal(customerJSON.id, res.body.data.id);
+                    assert.equal(customerJSON.type, res.body.data.type);
+                })
+                .end(done);
+        });
     });
 });
