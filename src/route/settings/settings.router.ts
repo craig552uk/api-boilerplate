@@ -69,18 +69,36 @@ router.patch("/profile", (req, res, next) => {
  * Get Customer settings
  * Admin only
  */
-router.get("/account", (req, res) => {
+router.get("/account", (req, res, next) => {
     if (!req.jwt.admin) { throw new Unauthorized("Administrator access required"); }
-    res.send("OK");
+
+    Customer.findById(req.jwt.cid)
+        .then((customer) => {
+            if (!customer) { throw new Unauthorized("No Customer exists with that ID"); }
+            res.json({ data: customer });
+        })
+        .catch(next);
 });
 
 /**
  * Update Customer settings
  * Admin only
  */
-router.patch("/account", (req, res) => {
+router.patch("/account", (req, res, next) => {
     if (!req.jwt.admin) { throw new Unauthorized("Administrator access required"); }
-    res.send("OK");
+
+    // Can't update all fields
+    delete req.body.createdAt;
+    delete req.body.id;
+    delete req.body.type;
+    delete req.body.updatedAt;
+
+    Customer.findOneAndUpdate({ _id: req.jwt.cid }, req.body, { new: true })
+        .then((customer) => {
+            if (!customer) { throw new Unauthorized("No Customer exists with that ID"); }
+            res.json({ data: customer });
+        })
+        .catch(next);
 });
 
 export = router;

@@ -11,7 +11,9 @@ const PASSWORD = "Passw0rd";
 
 let customer: ICustomer;
 let user: IUser;
-let token: string;
+let admin: IUser;
+let userToken: string;
+let adminToken: string;
 
 describe("Settings API routes", () => {
 
@@ -28,13 +30,22 @@ describe("Settings API routes", () => {
             password: PASSWORD,
         }).save();
 
-        token = user.getJWT();
+        admin = await new User({
+            admin: true,
+            customerId: customer.id,
+            login: Faker.internet.email(),
+            name: Faker.name.findName(),
+            password: PASSWORD,
+        }).save();
+
+        userToken = user.getJWT();
+        adminToken = admin.getJWT();
     });
 
     describe("GET /settings/profile", () => {
         it("should return settings for current User", (done) => {
             app.get("/settings/profile")
-                .set("authorization", `Bearer ${token}`)
+                .set("authorization", `Bearer ${userToken}`)
                 .expect(200)
                 .expect("content-type", /json/)
                 .expect((res: any) => {
@@ -56,7 +67,7 @@ describe("Settings API routes", () => {
     describe("PATCH /settings/password", () => {
         it("should return 400 `Bad Request` current password not provided", (done) => {
             app.patch("/settings/password")
-                .set("authorization", `Bearer ${token}`)
+                .set("authorization", `Bearer ${userToken}`)
                 .send({
                     newPassword1: "Passw0rd",
                     newPassword2: "Passw0rd",
@@ -69,7 +80,7 @@ describe("Settings API routes", () => {
 
         it("should return 400 `Bad Request` if new password 1 not provided", (done) => {
             app.patch("/settings/password")
-                .set("authorization", `Bearer ${token}`)
+                .set("authorization", `Bearer ${userToken}`)
                 .send({
                     currentPassword: PASSWORD,
                     newPassword2: "Passw0rd",
@@ -82,7 +93,7 @@ describe("Settings API routes", () => {
 
         it("should return 400 `Bad Request` if new password 2 not provided", (done) => {
             app.patch("/settings/password")
-                .set("authorization", `Bearer ${token}`)
+                .set("authorization", `Bearer ${userToken}`)
                 .send({
                     currentPassword: PASSWORD,
                     newPassword1: "Passw0rd",
@@ -95,7 +106,7 @@ describe("Settings API routes", () => {
 
         it("should return 400 `Bad Request` if incorrect current password provided", (done) => {
             app.patch("/settings/password")
-                .set("authorization", `Bearer ${token}`)
+                .set("authorization", `Bearer ${userToken}`)
                 .send({
                     currentPassword: "badPassw0rd",
                     newPassword1: "Passw0rd",
@@ -109,7 +120,7 @@ describe("Settings API routes", () => {
 
         it("should return 400 `Bad Request` if new passwords do not match", (done) => {
             app.patch("/settings/password")
-                .set("authorization", `Bearer ${token}`)
+                .set("authorization", `Bearer ${userToken}`)
                 .send({
                     currentPassword: PASSWORD,
                     newPassword1: "Passw0rd1",
@@ -123,7 +134,7 @@ describe("Settings API routes", () => {
 
         it("should return 200 `OK` if password successfully updated", (done) => {
             app.patch("/settings/password")
-                .set("authorization", `Bearer ${token}`)
+                .set("authorization", `Bearer ${userToken}`)
                 .send({
                     currentPassword: PASSWORD,
                     newPassword1: "Passw0rd1",
@@ -153,17 +164,17 @@ describe("Settings API routes", () => {
             const data = {
                 admin: !user.admin,
                 createdAt: new Date(),
-                customerId: Faker.random.uuid,
-                id: Faker.random.uuid,
-                login: Faker.internet.email,
+                customerId: Faker.random.uuid(),
+                id: Faker.random.uuid(),
+                login: Faker.internet.email(),
                 name: Faker.name.findName(),
-                password: Faker.internet.password,
+                password: Faker.internet.password(),
                 root: !user.root,
                 updatedAt: new Date(),
             };
 
             app.patch("/settings/profile")
-                .set("authorization", `Bearer ${token}`)
+                .set("authorization", `Bearer ${userToken}`)
                 .send(data)
                 .expect(200)
                 .expect("content-type", /json/)
@@ -190,22 +201,63 @@ describe("Settings API routes", () => {
 describe("GET /settings/account", () => {
     it("should return 401 `Unauthorized` if current User is not an admin", (done) => {
         app.get("/settings/account")
-            .set("authorization", `Bearer ${token}`)
+            .set("authorization", `Bearer ${userToken}`)
             .expect("content-type", /json/)
             .expect(401)
             .end(done);
     });
-    xit("should return settings for Customer if current User is an admin");
+
+    it("should return settings for Customer if current User is an admin", (done) => {
+        app.get("/settings/account")
+            .set("authorization", `Bearer ${adminToken}`)
+            .expect(200)
+            .expect("content-type", /json/)
+            .expect((res: any) => {
+                const customerJSON = JSON.parse(JSON.stringify(customer)) as ICustomer;
+                assert.equal(customerJSON.createdAt, res.body.data.createdAt);
+                assert.equal(customerJSON.id, res.body.data.id);
+                assert.equal(customerJSON.name, res.body.data.name);
+                assert.equal(customerJSON.type, res.body.data.type);
+                assert.equal(customerJSON.updatedAt, res.body.data.updatedAt);
+            })
+            .end(done);
+    });
 });
 
 describe("PATCH /settings/account", () => {
     it("should return 401 `Unauthorized` if current User is not admin", (done) => {
         app.patch("/settings/account")
-            .set("authorization", `Bearer ${token}`)
+            .set("authorization", `Bearer ${userToken}`)
             .expect("content-type", /json/)
             .expect(401)
             .end(done);
     });
-    xit("should return 400 `Bad Request` if invalid email provided");
-    xit("should return 200 `OK` if account successfully updated");
+
+    it("should return 200 `OK` if account successfully updated", (done) => {
+        const data = {
+            createdAt: new Date(),
+            id: Faker.random.uuid(),
+            name: Faker.company.companyName(),
+            updatedAt: new Date(),
+        };
+
+        app.patch("/settings/account")
+            .set("authorization", `Bearer ${adminToken}`)
+            .send(data)
+            .expect(200)
+            .expect("content-type", /json/)
+            .expect((res: any) => {
+                const customerJSON = JSON.parse(JSON.stringify(customer)) as ICustomer;
+
+                // Should update permitted fields
+                assert.equal(data.name, res.body.data.name);
+                assert.notEqual(customerJSON.updatedAt, res.body.data.updatedAt);
+
+                // Should not update other fields
+                assert.equal(customerJSON.createdAt, res.body.data.createdAt);
+                assert.equal(customerJSON.id, res.body.data.id);
+                assert.equal(customerJSON.type, res.body.data.type);
+            })
+            .end(done);
+    });
 });
