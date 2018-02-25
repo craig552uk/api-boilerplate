@@ -87,4 +87,21 @@ router.delete("/:id", (req, res, next) => {
         .catch(next);
 });
 
+/**
+ * Root Users can impersonate any User
+ */
+router.get("/:id/impersonate", (req, res, next) => {
+    if (!req.jwt.root) { throw new Unauthorized("Root access required"); }
+
+    User.findOne({ _id: req.params.id })
+        .then((user) => {
+            if (!user) { throw new NotFound("No User exists with that ID"); }
+
+            // Generate JWT including Root token payload
+            const token = user.getJWT({ impersonatedBy: req.jwt });
+            res.json({ token, type: "jwt" });
+        })
+        .catch(next);
+});
+
 export = router;

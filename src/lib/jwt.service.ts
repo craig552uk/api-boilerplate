@@ -18,3 +18,10 @@ export function sign(payload: any): string {
 export function verify(token: string): any {
     return jwt.verify(token, JWT_SECRET, { issuer: JWT_ISSUER });
 }
+
+/**
+ * Unpack a token payload
+ */
+export function decode(token: string): any {
+    return jwt.decode(token);
+}

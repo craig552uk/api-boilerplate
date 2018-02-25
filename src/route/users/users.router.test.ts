@@ -2,6 +2,7 @@ import * as assert from "assert";
 import * as Faker from "faker";
 import "mocha";
 import * as supertest from "supertest";
+import * as JWTService from "../../lib/jwt.service";
 import { Customer, ICustomer } from "../../model/customer.model";
 import { IUser, User } from "../../model/user.model";
 import { testApplication as app } from "../../testrunner";
@@ -12,8 +13,10 @@ const PASSWORD = "Passw0rd";
 let customer: ICustomer;
 let user: IUser;
 let admin: IUser;
+let root: IUser;
 let userToken: string;
 let adminToken: string;
+let rootToken: string;
 
 describe("User API routes", () => {
 
@@ -38,8 +41,18 @@ describe("User API routes", () => {
             password: PASSWORD,
         }).save();
 
+        root = await new User({
+            admin: true,
+            customerId: customer.id,
+            login: Faker.internet.email(),
+            name: Faker.name.findName(),
+            password: PASSWORD,
+            root: true,
+        }).save();
+
         userToken = user.getJWT();
         adminToken = admin.getJWT();
+        rootToken = root.getJWT();
     });
 
     describe("GET /users", () => {
@@ -57,7 +70,7 @@ describe("User API routes", () => {
                 .expect("content-type", /json/)
                 .expect(200)
                 .expect((res: any) => {
-                    assert.equal(res.body.data.length, 2);
+                    assert.equal(res.body.data.length, 3);
                     res.body.data.forEach((u: IUser) => {
                         assert.equal(u.customerId, customer.id);
                         assert.equal(u.type, "User");
@@ -325,6 +338,39 @@ describe("User API routes", () => {
                     assert.equal(res.body.data.type, "User");
                     assert.equal(res.body.data.customerId, customer.id);
                     assert.equal(res.body.data.id, user.id);
+                })
+                .end(done);
+        });
+    });
+
+    describe("GET /users/:id/impersonate", () => {
+        it("should return 401 `Unauthorized` for non-root Users", (done) => {
+            app.get("/users/000000000000000000000000/impersonate")
+                .set("authorization", `Bearer ${userToken}`)
+                .expect("content-type", /json/)
+                .expect(401)
+                .end(done);
+        });
+
+        it("Should return 404 `Not Found` for non-existing id", (done) => {
+            app.get("/users/000000000000000000000000/impersonate")
+                .set("authorization", `Bearer ${rootToken}`)
+                .expect("content-type", /json/)
+                .expect(404)
+                .end(done);
+        });
+
+        it("Should return an impersonation token for User", (done) => {
+            app.get(`/users/${admin.id}/impersonate`)
+                .set("authorization", `Bearer ${rootToken}`)
+                .expect("content-type", /json/)
+                .expect(200)
+                .expect((res: any) => {
+                    assert.equal(res.body.type, "jwt");
+                    const token = JWTService.decode(res.body.token);
+                    assert.equal(token.id, admin.id);
+                    assert.ok(token.impersonatedBy);
+                    assert.equal(token.impersonatedBy.id, root.id);
                 })
                 .end(done);
         });

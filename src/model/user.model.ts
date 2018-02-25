@@ -16,7 +16,7 @@ export interface IUser extends mongoose.Document {
     updatedAt: Date;
 
     checkPassword(candidatePassword: string): boolean;
-    getJWT(): string;
+    getJWT(payload?: any): string;
 }
 
 export const UserSchema = new mongoose.Schema(
@@ -76,8 +76,10 @@ UserSchema.methods.checkPassword = function checkPassword(candidatePassword: str
 /**
  * Get a JWT token for this User
  */
-UserSchema.methods.getJWT = function getJWT(): string {
-    const payload: any = { id: this.id, cid: this.customerId };
+UserSchema.methods.getJWT = function getJWT(payload: any = {}): string {
+
+    payload.id = this.id;
+    payload.cid = this.customerId;
 
     // Include ACL flags when appropriate
     if (this.admin) { payload.admin = true; }
