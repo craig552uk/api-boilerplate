@@ -251,6 +251,7 @@ describe("User API routes", () => {
 
         it("Should update User (excluding password)", (done) => {
             const data = {
+                admin: !user.admin,
                 login: Faker.internet.email(),
                 name: Faker.name.findName(),
             };
@@ -261,6 +262,7 @@ describe("User API routes", () => {
                 .expect("content-type", /json/)
                 .expect(200)
                 .expect((res: any) => {
+                    assert.equal(res.body.data.admin, data.admin);
                     assert.equal(res.body.data.customerId, customer.id);
                     assert.equal(res.body.data.id, user.id);
                     assert.equal(res.body.data.login, data.login);
@@ -273,6 +275,7 @@ describe("User API routes", () => {
 
         it("Should update User (including password)", (done) => {
             const data = {
+                admin: !user.admin,
                 login: Faker.internet.email(),
                 name: Faker.name.findName(),
                 password: "Passw0rd1",
@@ -284,6 +287,7 @@ describe("User API routes", () => {
                 .expect("content-type", /json/)
                 .expect(200)
                 .expect((res: any) => {
+                    assert.equal(res.body.data.admin, data.admin);
                     assert.equal(res.body.data.customerId, customer.id);
                     assert.equal(res.body.data.id, user.id);
                     assert.equal(res.body.data.login, data.login);
