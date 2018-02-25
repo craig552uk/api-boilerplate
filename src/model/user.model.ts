@@ -6,6 +6,7 @@ export interface IUser extends mongoose.Document {
     admin: boolean;
     createdAt: Date;
     customerId: string;
+    enabled: boolean;
     id: string;
     login: string;
     name: string;
@@ -22,6 +23,7 @@ export const UserSchema = new mongoose.Schema(
     {
         admin: { type: Boolean, default: false },
         customerId: { type: mongoose.Schema.Types.ObjectId, required: true },
+        enabled: { type: Boolean, default: true },
         login: { type: String, required: true, index: { unique: true } },
         name: { type: String, required: true },
         password: { type: String, required: true },

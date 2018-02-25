@@ -14,7 +14,10 @@ const router = Router() as Router;
 router.all("/login", parseBasicAuth, (req, res, next) => {
     User.findOne({ login: req.username })
         .then((user) => {
-            // TODO #18 Support User deactivation
+            if (user && !user.enabled) {
+                throw new Unauthorized("Your Account has been disabled");
+            }
+
             if (user && user.checkPassword(req.password)) {
                 res.json({ token: user.getJWT(), type: "jwt" });
             } else {
