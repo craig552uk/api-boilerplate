@@ -1,8 +1,6 @@
 import * as jwt from "jsonwebtoken";
 import { JWT_EXPIRY, JWT_ISSUER, JWT_SECRET } from "./config.service";
 
-console.log(JWT_ISSUER);
-
 /**
  * Generate a JWT signed with the application secret
  * @param payload Payload data
