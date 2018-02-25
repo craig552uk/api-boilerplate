@@ -15,7 +15,7 @@ let admin: IUser;
 let userToken: string;
 let adminToken: string;
 
-describe("Settings API routes", () => {
+describe("User API routes", () => {
 
     before(async () => {
         customer = await new Customer({
@@ -51,7 +51,20 @@ describe("Settings API routes", () => {
                 .end(done);
         });
 
-        xit("Should return all Users for this Customer");
+        it("Should return all Users for this Customer", (done) => {
+            app.get("/users")
+                .set("authorization", `Bearer ${adminToken}`)
+                .expect("content-type", /json/)
+                .expect(200)
+                .expect((res: any) => {
+                    assert.equal(res.body.data.length, 2);
+                    res.body.data.forEach((u: IUser) => {
+                        assert.equal(u.customerId, customer.id);
+                        assert.equal(u.type, "User");
+                    });
+                })
+                .end(done);
+        });
     });
 
     describe("POST /users", () => {
@@ -120,7 +133,26 @@ describe("Settings API routes", () => {
                 .end(done);
         });
 
-        xit("Should create new User for this Customer");
+        it("Should create new User for this Customer", (done) => {
+            const data = {
+                login: Faker.internet.email(),
+                name: Faker.name.findName(),
+                password: "Passw0rd",
+            };
+
+            app.post("/users")
+                .send(data)
+                .set("authorization", `Bearer ${adminToken}`)
+                .expect("content-type", /json/)
+                .expect(200)
+                .expect((res: any) => {
+                    assert.equal(res.body.data.customerId, customer.id);
+                    assert.equal(res.body.data.login, data.login);
+                    assert.equal(res.body.data.name, data.name);
+                    assert.equal(res.body.data.type, "User");
+                })
+                .end(done);
+        });
     });
 
     describe("GET /users/:id", () => {
@@ -140,7 +172,18 @@ describe("Settings API routes", () => {
                 .end(done);
         });
 
-        xit("Should return a single User");
+        it("Should return a single User", (done) => {
+            app.get(`/users/${user.id}`)
+                .set("authorization", `Bearer ${adminToken}`)
+                .expect("content-type", /json/)
+                .expect(200)
+                .expect((res: any) => {
+                    assert.equal(res.body.data.customerId, customer.id);
+                    assert.equal(res.body.data.id, user.id);
+                    assert.equal(res.body.data.type, "User");
+                })
+                .end(done);
+        });
     });
 
     describe("PATCH /users/:id", () => {
@@ -206,8 +249,50 @@ describe("Settings API routes", () => {
                 .end(done);
         });
 
-        xit("Should update User (excluding password)");
-        xit("Should update User (including password)");
+        it("Should update User (excluding password)", (done) => {
+            const data = {
+                login: Faker.internet.email(),
+                name: Faker.name.findName(),
+            };
+
+            app.patch(`/users/${user.id}`)
+                .send(data)
+                .set("authorization", `Bearer ${adminToken}`)
+                .expect("content-type", /json/)
+                .expect(200)
+                .expect((res: any) => {
+                    assert.equal(res.body.data.customerId, customer.id);
+                    assert.equal(res.body.data.id, user.id);
+                    assert.equal(res.body.data.login, data.login);
+                    assert.equal(res.body.data.name, data.name);
+                    assert.equal(res.body.data.type, "User");
+                    assert.notEqual(res.body.data.updatedAt, user.updatedAt);
+                })
+                .end(done);
+        });
+
+        it("Should update User (including password)", (done) => {
+            const data = {
+                login: Faker.internet.email(),
+                name: Faker.name.findName(),
+                password: "Passw0rd1",
+            };
+
+            app.patch(`/users/${user.id}`)
+                .send(data)
+                .set("authorization", `Bearer ${adminToken}`)
+                .expect("content-type", /json/)
+                .expect(200)
+                .expect((res: any) => {
+                    assert.equal(res.body.data.customerId, customer.id);
+                    assert.equal(res.body.data.id, user.id);
+                    assert.equal(res.body.data.login, data.login);
+                    assert.equal(res.body.data.name, data.name);
+                    assert.equal(res.body.data.type, "User");
+                    assert.notEqual(res.body.data.updatedAt, user.updatedAt);
+                })
+                .end(done);
+        });
     });
 
     describe("DELETE /users/:id", () => {
@@ -227,6 +312,17 @@ describe("Settings API routes", () => {
                 .end(done);
         });
 
-        xit("Should delete User");
+        it("Should delete User", (done) => {
+            app.delete(`/users/${user.id}`)
+                .set("authorization", `Bearer ${adminToken}`)
+                .expect("content-type", /json/)
+                .expect(200)
+                .expect((res: any) => {
+                    assert.equal(res.body.data.type, "User");
+                    assert.equal(res.body.data.customerId, customer.id);
+                    assert.equal(res.body.data.id, user.id);
+                })
+                .end(done);
+        });
     });
 });
