@@ -15,7 +15,7 @@ export function LoggerMiddleware(req: Request, res: Response, next: NextFunction
     function requestLogger() {
         res.removeListener("finish", requestLogger);
         res.removeListener("close", requestLogger);
-        logger.info(`${res.statusCode} ${req.method} ${req.url}`);
+        logger.info({ req, res }, `${res.statusCode} ${req.method} ${req.url}`);
     }
     res.on("finish", requestLogger);
     res.on("close", requestLogger);

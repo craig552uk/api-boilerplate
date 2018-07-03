@@ -22,6 +22,11 @@ export class LoggerService {
         options.name = metadata.name;
         options.version = metadata.version;
         options.level = process.env.LOG_LEVEL as bunyan.LogLevel || "trace";
+        options.serializers = {
+            err: bunyan.stdSerializers.err,
+            req: bunyan.stdSerializers.req,
+            res: bunyan.stdSerializers.res,
+        };
 
         // Create and return logger
         return (this.instance = new bunyan(options as bunyan.LoggerOptions));
