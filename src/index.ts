@@ -27,4 +27,4 @@ mongoose.connect(DBURL)
             logger.info(`Listening on http://${HOST}:${PORT}`);
         });
     })
-    .catch(logger.error);
+    .catch((err) => logger.error(err));
