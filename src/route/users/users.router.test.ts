@@ -64,7 +64,7 @@ describe("User API routes", () => {
                 .end(done);
         });
 
-        it("Should return all Users for this Customer", (done) => {
+        it("should return all Users for this Customer", (done) => {
             app.get("/users")
                 .set("authorization", `Bearer ${adminToken}`)
                 .expect("content-type", /json/)
@@ -89,7 +89,7 @@ describe("User API routes", () => {
                 .end(done);
         });
 
-        it("Should return 400 `Bad Request` if name not provided", (done) => {
+        it("should return 400 `Bad Request` if name not provided", (done) => {
             const data = {
                 login: Faker.internet.email(),
                 password: "Passw0rd",
@@ -103,7 +103,7 @@ describe("User API routes", () => {
                 .end(done);
         });
 
-        it("Should return 400 `Bad Request` if login not provided", (done) => {
+        it("should return 400 `Bad Request` if login not provided", (done) => {
             const data = {
                 name: Faker.name.findName(),
                 password: "Passw0rd",
@@ -117,7 +117,7 @@ describe("User API routes", () => {
                 .end(done);
         });
 
-        it("Should return 400 `Bad Request` if password not provided", (done) => {
+        it("should return 400 `Bad Request` if password not provided", (done) => {
             const data = {
                 login: Faker.internet.email(),
                 name: Faker.name.findName(),
@@ -131,7 +131,7 @@ describe("User API routes", () => {
                 .end(done);
         });
 
-        it("Should return 400 `Bad Request` if login is not an email address", (done) => {
+        it("should return 400 `Bad Request` if login is not an email address", (done) => {
             const data = {
                 login: Faker.name.findName(),
                 name: Faker.name.findName(),
@@ -146,7 +146,7 @@ describe("User API routes", () => {
                 .end(done);
         });
 
-        it("Should create new User for this Customer", (done) => {
+        it("should create new User for this Customer", (done) => {
             const data = {
                 login: Faker.internet.email(),
                 name: Faker.name.findName(),
@@ -177,7 +177,7 @@ describe("User API routes", () => {
                 .end(done);
         });
 
-        it("Should return 404 `Not Found` for non-existing id", (done) => {
+        it("should return 404 `Not Found` for non-existing id", (done) => {
             app.get("/users/000000000000000000000000")
                 .set("authorization", `Bearer ${adminToken}`)
                 .expect("content-type", /json/)
@@ -185,7 +185,7 @@ describe("User API routes", () => {
                 .end(done);
         });
 
-        it("Should return a single User", (done) => {
+        it("should return a single User", (done) => {
             app.get(`/users/${user.id}`)
                 .set("authorization", `Bearer ${adminToken}`)
                 .expect("content-type", /json/)
@@ -208,7 +208,7 @@ describe("User API routes", () => {
                 .end(done);
         });
 
-        it("Should return 400 `Bad Request` if name not provided", (done) => {
+        it("should return 400 `Bad Request` if name not provided", (done) => {
             const data = {
                 login: Faker.internet.email(),
             };
@@ -221,7 +221,7 @@ describe("User API routes", () => {
                 .end(done);
         });
 
-        it("Should return 400 `Bad Request` if login not provided", (done) => {
+        it("should return 400 `Bad Request` if login not provided", (done) => {
             const data = {
                 name: Faker.name.findName(),
             };
@@ -234,7 +234,7 @@ describe("User API routes", () => {
                 .end(done);
         });
 
-        it("Should return 400 `Bad Request` if login is not an email address", (done) => {
+        it("should return 400 `Bad Request` if login is not an email address", (done) => {
             const data = {
                 login: Faker.name.findName(),
                 name: Faker.name.findName(),
@@ -248,7 +248,7 @@ describe("User API routes", () => {
                 .end(done);
         });
 
-        it("Should return 404 `Not Found` for non-existing id", (done) => {
+        it("should return 404 `Not Found` for non-existing id", (done) => {
             const data = {
                 login: Faker.internet.email(),
                 name: Faker.name.findName(),
@@ -262,7 +262,7 @@ describe("User API routes", () => {
                 .end(done);
         });
 
-        it("Should update User (excluding password)", (done) => {
+        it("should update User (excluding password)", (done) => {
             const data = {
                 admin: !user.admin,
                 login: Faker.internet.email(),
@@ -286,7 +286,7 @@ describe("User API routes", () => {
                 .end(done);
         });
 
-        it("Should update User (including password)", (done) => {
+        it("should update User (including password)", (done) => {
             const data = {
                 admin: !user.admin,
                 login: Faker.internet.email(),
@@ -321,7 +321,7 @@ describe("User API routes", () => {
                 .end(done);
         });
 
-        it("Should return 404 `Not Found` for non-existing id", (done) => {
+        it("should return 404 `Not Found` for non-existing id", (done) => {
             app.delete("/users/000000000000000000000000")
                 .set("authorization", `Bearer ${adminToken}`)
                 .expect("content-type", /json/)
@@ -329,7 +329,7 @@ describe("User API routes", () => {
                 .end(done);
         });
 
-        it("Should delete User", (done) => {
+        it("should delete User", (done) => {
             app.delete(`/users/${user.id}`)
                 .set("authorization", `Bearer ${adminToken}`)
                 .expect("content-type", /json/)
@@ -352,7 +352,7 @@ describe("User API routes", () => {
                 .end(done);
         });
 
-        it("Should return 404 `Not Found` for non-existing id", (done) => {
+        it("should return 404 `Not Found` for non-existing id", (done) => {
             app.get("/users/000000000000000000000000/impersonate")
                 .set("authorization", `Bearer ${rootToken}`)
                 .expect("content-type", /json/)
@@ -360,7 +360,7 @@ describe("User API routes", () => {
                 .end(done);
         });
 
-        it("Should return an impersonation token for User", (done) => {
+        it("should return an impersonation token for User", (done) => {
             app.get(`/users/${admin.id}/impersonate`)
                 .set("authorization", `Bearer ${rootToken}`)
                 .expect("content-type", /json/)

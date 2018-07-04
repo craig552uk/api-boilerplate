@@ -180,11 +180,11 @@ describe("Settings API routes", () => {
                 .expect("content-type", /json/)
                 .expect((res: any) => {
                     const userJSON = JSON.parse(JSON.stringify(user)) as IUser;
-                    // Should update permitted fields
+                    // should update permitted fields
                     assert.equal(data.name, res.body.data.name);
                     assert.notEqual(userJSON.updatedAt, res.body.data.updatedAt);
 
-                    // Should not update other fields
+                    // should not update other fields
                     assert.equal(userJSON.admin, res.body.data.admin);
                     assert.equal(userJSON.createdAt, res.body.data.createdAt);
                     assert.equal(userJSON.customerId, res.body.data.customerId);
@@ -248,11 +248,11 @@ describe("Settings API routes", () => {
                 .expect((res: any) => {
                     const customerJSON = JSON.parse(JSON.stringify(customer)) as ICustomer;
 
-                    // Should update permitted fields
+                    // should update permitted fields
                     assert.equal(data.name, res.body.data.name);
                     assert.notEqual(customerJSON.updatedAt, res.body.data.updatedAt);
 
-                    // Should not update other fields
+                    // should not update other fields
                     assert.equal(customerJSON.createdAt, res.body.data.createdAt);
                     assert.equal(customerJSON.id, res.body.data.id);
                     assert.equal(customerJSON.type, res.body.data.type);

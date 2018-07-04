@@ -30,7 +30,7 @@ router.all("/teapot", (req, res) => {
 
 /**
  * Thrown native Error
- * Should log native Error and return Server Error
+ * should log native Error and return Server Error
  */
 router.all("/error", (req, res) => {
     throw new Error("Danger Will Robinson");
