@@ -67,12 +67,17 @@ router.patch("/:id", (req, res, next) => {
 
 router.delete("/:id", (req, res, next) => {
     const conditions = { _id: req.params.id };
+    // TODO #24 Delete all Users when deleting Customer
     Customer.findOneAndRemove(conditions)
         .then((customer) => {
             if (!customer) { throw new NotFound("No Customer exists with that ID"); }
             res.json({ data: customer });
         })
         .catch(next);
+});
+
+router.get("/:id/users", (req, res, next) => {
+    // TODO #23 Root User can get all Users for any Customer
 });
 
 export = router;
