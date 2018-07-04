@@ -13,9 +13,8 @@ router.use(requireJWTAuth, (req, res, next) => {
 });
 
 router.get("/", (req, res, next) => {
-    // TODO Pagination
-    // TODO Search
-    // TODO Filters
+    // TODO #21 Add support for searching Users
+    // TODO #22 Add pagination support
     const conditions = { customerId: req.jwt.cid };
     User.find(conditions)
         .then((users) => res.jsonp({ data: users }))
