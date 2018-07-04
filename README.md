@@ -31,6 +31,12 @@ $ docker build -t api.featherback.co:latest -t api.featherback.co:0.0.0 .
 $ docker run -d -p 1337:1337 --name api.featherback.co api.featherback.co:latest
 ```
 
+Local development will require a MongoDB, run a temporary container with:
+
+```
+$ docker run -it --rm -p 27017:27017 --name mongo -t mongo:latest
+```
+
 Customer and User Models
 ------------------------
 
