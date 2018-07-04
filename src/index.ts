@@ -1,3 +1,4 @@
+import * as Faker from "faker";
 import * as mongoose from "mongoose";
 import { argv } from "yargs";
 import { ApplicationService } from "./lib/application.service";
@@ -11,8 +12,8 @@ const PORT = argv.port || 1337;
 const DBURL = argv.DBURL || "mongodb://localhost/local";
 
 // Default Customer & User details
-const ROOT_EMAIL = argv.email || "root2@featherback.co";
-const ROOT_PASSWORD = argv.password || "Passw0rd";
+const ROOT_EMAIL = argv.email || "root@featherback.co";
+const ROOT_PASSWORD = argv.password || Faker.internet.password(10);
 const ROOT_NAME = argv.name || "Root";
 
 // Use native promises in Mongoose
