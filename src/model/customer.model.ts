@@ -4,6 +4,7 @@ export interface ICustomer extends mongoose.Document {
     createdAt: Date;
     id: string;
     name: string;
+    email: string;
     type: "Customer";
     updatedAt: Date;
 }
