@@ -43,6 +43,7 @@ mongoose.connect(DBURL)
                 login: ROOT_EMAIL,
                 name: ROOT_NAME,
                 password: ROOT_PASSWORD,
+                root: true,
             }).save();
 
             const msg = `Created Root Customer and User\nUsername: ${ROOT_EMAIL}\nPassword: ${ROOT_PASSWORD}`;
