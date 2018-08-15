@@ -46,7 +46,13 @@ mongoose.connect(DBURL)
                 root: true,
             }).save();
 
-            const msg = `Created Root Customer and User\nUsername: ${ROOT_EMAIL}\nPassword: ${ROOT_PASSWORD}`;
+            // Generate JWT for Root User
+            const jwt = rootUser.getJWT();
+
+            const msg = `Created Root Customer and User
+Username: ${ROOT_EMAIL}
+Password: ${ROOT_PASSWORD}
+JWT: ${jwt}`;
             logger.info({ rootCustomer, rootUser }, msg);
         }
 
