@@ -5,6 +5,7 @@ import * as bodyParser from "body-parser";
 import * as express from "express";
 import { NextFunction, Request, Response, Router } from "express";
 import { HttpError, InternalServerError, NotFound } from "http-errors";
+import { CastError } from "mongoose";
 import { LoggerMiddleware } from "../middleware/logger.middleware";
 import * as ApplicationRoutes from "../route";
 import { LoggerService } from "./logger.service";
@@ -49,6 +50,11 @@ export class ApplicationService {
                 // Respond with thrown HTTP Errors
                 res.status(err.statusCode);
                 res.jsonp({ message: err.message });
+            } else if (err instanceof CastError) {
+                // CastError thrown by malformed MongoDB document ID
+                const nf = new NotFound();
+                res.status(nf.statusCode);
+                res.jsonp({ message: nf.message });
             } else {
                 // Log other Errors and respond with Internal Server Error
                 logger.error(err);
