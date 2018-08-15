@@ -39,7 +39,13 @@ router.post("/", (req, res, next) => {
 
     new User(data).save()
         .then((user) => res.jsonp({ data: user }))
-        .catch(next);
+        .catch((err) => {
+            if (err.message.match(/E11000/)) { // Duplicate key error
+                next(new BadRequest("Email address already taken"));
+            } else {
+                next(err);
+            }
+        });
 });
 
 router.get("/:id", (req, res, next) => {
@@ -73,7 +79,13 @@ router.patch("/:id", (req, res, next) => {
             if (!user) { throw new NotFound("No User exists with that ID"); }
             res.json({ data: user });
         })
-        .catch(next);
+        .catch((err) => {
+            if (err.message.match(/E11000/)) { // Duplicate key error
+                next(new BadRequest("Email address already taken"));
+            } else {
+                next(err);
+            }
+        });
 });
 
 router.delete("/:id", (req, res, next) => {
