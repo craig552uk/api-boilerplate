@@ -203,6 +203,47 @@ describe("Customer API routes", () => {
         });
     });
 
+    describe("GET /customers/:id/users", () => {
+        it("should return 401 `Unauthorized` if current User is non-privilaged", (done) => {
+            app.get("/customers/000000000000000000000000/users")
+                .set("authorization", `Bearer ${userToken}`)
+                .expect("content-type", /json/)
+                .expect(401)
+                .end(done);
+        });
+
+        it("should return 401 `Unauthorized` if current User is admin", (done) => {
+            app.get("/customers/000000000000000000000000/users")
+                .set("authorization", `Bearer ${adminToken}`)
+                .expect("content-type", /json/)
+                .expect(401)
+                .end(done);
+        });
+
+        xit("should return 404 `Not Found` for non-existing id", (done) => {
+            app.get("/customers/000000000000000000000000/users")
+                .set("authorization", `Bearer ${rootToken}`)
+                .expect("content-type", /json/)
+                .expect(404)
+                .end(done);
+        });
+
+        it("should return all Users for Customer", (done) => {
+            app.get(`/customers/${customer.id}/users`)
+                .set("authorization", `Bearer ${rootToken}`)
+                .expect("content-type", /json/)
+                .expect(200)
+                .expect((res: any) => {
+                    assert.equal(res.body.data.length, 3);
+                    res.body.data.forEach((u: IUser) => {
+                        assert.equal(u.type, "User");
+                        assert.equal(u.customerId, customer.id);
+                    });
+                })
+                .end(done);
+        });
+    });
+
     describe("PATCH /customers/:id", () => {
         it("should return 401 `Unauthorized` if current User is non-privilaged", (done) => {
             app.patch("/customers/000000000000000000000000")

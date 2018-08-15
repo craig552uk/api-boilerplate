@@ -3,6 +3,7 @@ import { NextFunction, Request, Response, Router } from "express";
 import { BadRequest, NotFound, Unauthorized } from "http-errors";
 import { requireJWTAuth } from "../../middleware/authorisation.middleware";
 import { Customer } from "../../model/customer.model";
+import { User } from "../../model/user.model";
 
 const router = Router() as Router;
 
@@ -89,7 +90,12 @@ router.delete("/:id", (req, res, next) => {
 });
 
 router.get("/:id/users", (req, res, next) => {
-    // TODO #23 Root User can get all Users for any Customer
+    // TODO #21 Add support for searching Users
+    // TODO #22 Add pagination support
+    const conditions = { customerId: req.params.id };
+    User.find(conditions)
+        .then((users) => res.jsonp({ data: users }))
+        .catch(next);
 });
 
 export = router;
