@@ -32,4 +32,8 @@ export const CustomerSchema = new mongoose.Schema(
 // Apply pagination plugin to model
 CustomerSchema.plugin(mongoosePaginate);
 
+// Define indexes
+CustomerSchema.index({ name: 1 });
+CustomerSchema.index({ email: 1 });
+
 export const Customer = mongoose.model("Customer", CustomerSchema);

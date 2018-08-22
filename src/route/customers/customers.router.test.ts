@@ -94,8 +94,8 @@ describe("Customer API routes", () => {
                     assert.equal(res.body.limit, 10);
                     assert.equal(res.body.page, 1);
                     assert.equal(res.body.docs.length, 3);
-                    res.body.docs.forEach((u: IUser) => {
-                        assert.equal(u.type, "Customer");
+                    res.body.docs.forEach((c: ICustomer) => {
+                        assert.equal(c.type, "Customer");
                     });
                 })
                 .end(done);
@@ -112,8 +112,27 @@ describe("Customer API routes", () => {
                     assert.equal(res.body.limit, 2);
                     assert.equal(res.body.page, 1);
                     assert.equal(res.body.docs.length, 2);
-                    res.body.docs.forEach((u: IUser) => {
-                        assert.equal(u.type, "Customer");
+                    res.body.docs.forEach((c: ICustomer) => {
+                        assert.equal(c.type, "Customer");
+                    });
+                })
+                .end(done);
+        });
+
+        it("should search Customers", (done) => {
+            app.get(`/customers?q=${LOGIN}`)
+                .set("authorization", `Bearer ${rootToken}`)
+                .expect("content-type", /json/)
+                .expect(200)
+                .expect((res: any) => {
+                    assert.equal(res.body.total, 1);
+                    assert.equal(res.body.pages, 1);
+                    assert.equal(res.body.limit, 10);
+                    assert.equal(res.body.page, 1);
+                    assert.equal(res.body.docs.length, 1);
+                    res.body.docs.forEach((c: ICustomer) => {
+                        assert.equal(c.type, "Customer");
+                        assert.equal(c.email, LOGIN);
                     });
                 })
                 .end(done);
@@ -451,6 +470,26 @@ describe("Customer API routes", () => {
                     res.body.docs.forEach((u: IUser) => {
                         assert.equal(u.customerId, customer1.id);
                         assert.equal(u.type, "User");
+                    });
+                })
+                .end(done);
+        });
+
+        it("should search Users for a Customer", (done) => {
+            app.get(`/customers/${customer1.id}/users?q=${LOGIN}`)
+                .set("authorization", `Bearer ${rootToken}`)
+                .expect("content-type", /json/)
+                .expect(200)
+                .expect((res: any) => {
+                    assert.equal(res.body.total, 1);
+                    assert.equal(res.body.pages, 1);
+                    assert.equal(res.body.limit, 10);
+                    assert.equal(res.body.page, 1);
+                    assert.equal(res.body.docs.length, 1);
+                    res.body.docs.forEach((u: IUser) => {
+                        assert.equal(u.customerId, customer1.id);
+                        assert.equal(u.type, "User");
+                        assert.equal(u.login, LOGIN);
                     });
                 })
                 .end(done);

@@ -47,6 +47,11 @@ export const UserSchema = new mongoose.Schema(
 // Apply pagination plugin to model
 UserSchema.plugin(mongoosePaginate);
 
+// Define indexes
+UserSchema.index({ customerId: 1 });
+UserSchema.index({ name: 1 });
+UserSchema.index({ login: 1 });
+
 /**
  * Securely hash passwords before saving in DB
  */

@@ -1,8 +1,9 @@
 import * as EmailValidator from "email-validator";
-import { NextFunction, Request, Response, Router } from "express";
+import * as regExpEscape from "escape-string-regexp";
+import { Router } from "express";
 import { BadRequest, NotFound, Unauthorized } from "http-errors";
 import { requireJWTAuth } from "../../middleware/authorisation.middleware";
-import { IUser, User } from "../../model/user.model";
+import { User } from "../../model/user.model";
 
 const router = Router() as Router;
 
@@ -13,10 +14,15 @@ router.use(requireJWTAuth, (req, res, next) => {
 });
 
 router.get("/", (req, res, next) => {
-    // TODO #21 Add support for searching Users
     const page = parseInt(req.query.page, 10) || 1;
     const limit = parseInt(req.query.limit, 10) || 10;
-    const conditions = { customerId: req.jwt.cid };
+    const conditions: any = { customerId: req.jwt.cid };
+
+    // Inject search query if provided
+    if (req.query.q) {
+        const re = new RegExp(regExpEscape(req.query.q), "i");
+        conditions.$or = [{ name: re }, { login: re }];
+    }
 
     User.paginate(conditions, { page, limit })
         .then((userPages) => res.jsonp(userPages))

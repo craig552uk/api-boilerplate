@@ -101,6 +101,26 @@ describe("User API routes", () => {
                 })
                 .end(done);
         });
+
+        it("should search Users for this Customer", (done) => {
+            app.get(`/users?q=${LOGIN}`)
+                .set("authorization", `Bearer ${adminToken}`)
+                .expect("content-type", /json/)
+                .expect(200)
+                .expect((res: any) => {
+                    assert.equal(res.body.total, 1);
+                    assert.equal(res.body.pages, 1);
+                    assert.equal(res.body.limit, 10);
+                    assert.equal(res.body.page, 1);
+                    assert.equal(res.body.docs.length, 1);
+                    res.body.docs.forEach((u: IUser) => {
+                        assert.equal(u.customerId, customer.id);
+                        assert.equal(u.type, "User");
+                        assert.equal(u.login, LOGIN);
+                    });
+                })
+                .end(done);
+        });
     });
 
     describe("POST /users", () => {
