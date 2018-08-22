@@ -30,6 +30,8 @@ mongoose.connect(DBURL)
         // Create Root Customer and User if they do not exist
         if (! await Customer.findOne({ email: ROOT_EMAIL })) {
 
+            logger.info(`Creating Root Customer and User\nUsername: ${ROOT_EMAIL}\nPassword: ${ROOT_PASSWORD}`);
+
             // Create Root Customer
             const rootCustomer = await new Customer({
                 email: ROOT_EMAIL,
@@ -48,12 +50,7 @@ mongoose.connect(DBURL)
 
             // Generate JWT for Root User
             const jwt = rootUser.getJWT();
-
-            const msg = `Created Root Customer and User
-Username: ${ROOT_EMAIL}
-Password: ${ROOT_PASSWORD}
-JWT: ${jwt}`;
-            logger.info({ rootCustomer, rootUser }, msg);
+            logger.info({ rootCustomer, rootUser }, `Root User JWT: ${jwt}`);
         }
 
         // Get Application instance
