@@ -14,10 +14,12 @@ router.use(requireJWTAuth, (req, res, next) => {
 
 router.get("/", (req, res, next) => {
     // TODO #21 Add support for searching Users
-    // TODO #22 Add pagination support
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
     const conditions = { customerId: req.jwt.cid };
-    User.find(conditions)
-        .then((users) => res.jsonp({ docs: users }))
+
+    User.paginate(conditions, { page, limit })
+        .then((userPages) => res.jsonp(userPages))
         .catch(next);
 });
 

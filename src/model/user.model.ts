@@ -1,5 +1,6 @@
 import * as bcrypt from "bcrypt";
 import * as mongoose from "mongoose";
+import * as mongoosePaginate from "mongoose-paginate";
 import * as JWTService from "../lib/jwt.service";
 
 export interface IUser extends mongoose.Document {
@@ -42,6 +43,9 @@ export const UserSchema = new mongoose.Schema(
             },
         },
     });
+
+// Apply pagination plugin to model
+UserSchema.plugin(mongoosePaginate);
 
 /**
  * Securely hash passwords before saving in DB

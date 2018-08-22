@@ -9,7 +9,9 @@ import { testApplication as app } from "../../testrunner";
 const LOGIN = Faker.internet.email();
 const PASSWORD = "Passw0rd";
 
-let customer: ICustomer;
+let customer1: ICustomer;
+let customer2: ICustomer;
+let customer3: ICustomer;
 let user: IUser;
 let admin: IUser;
 let root: IUser;
@@ -20,13 +22,23 @@ let rootToken: string;
 describe("Customer API routes", () => {
 
     before(async () => {
-        customer = await new Customer({
+        customer1 = await new Customer({
             email: LOGIN,
             name: Faker.company.companyName(),
         }).save() as ICustomer;
 
+        customer2 = await new Customer({
+            email: Faker.internet.email(),
+            name: Faker.company.companyName(),
+        }).save() as ICustomer;
+
+        customer3 = await new Customer({
+            email: Faker.internet.email(),
+            name: Faker.company.companyName(),
+        }).save() as ICustomer;
+
         user = await new User({
-            customerId: customer.id,
+            customerId: customer1.id,
             login: LOGIN,
             name: Faker.name.findName(),
             password: PASSWORD,
@@ -34,7 +46,7 @@ describe("Customer API routes", () => {
 
         admin = await new User({
             admin: true,
-            customerId: customer.id,
+            customerId: customer1.id,
             login: Faker.internet.email(),
             name: Faker.name.findName(),
             password: PASSWORD,
@@ -42,7 +54,7 @@ describe("Customer API routes", () => {
 
         root = await new User({
             admin: true,
-            customerId: customer.id,
+            customerId: customer1.id,
             login: Faker.internet.email(),
             name: Faker.name.findName(),
             password: PASSWORD,
@@ -77,7 +89,29 @@ describe("Customer API routes", () => {
                 .expect("content-type", /json/)
                 .expect(200)
                 .expect((res: any) => {
-                    assert.equal(res.body.docs.length, 1);
+                    assert.equal(res.body.total, 3);
+                    assert.equal(res.body.pages, 1);
+                    assert.equal(res.body.limit, 10);
+                    assert.equal(res.body.page, 1);
+                    assert.equal(res.body.docs.length, 3);
+                    res.body.docs.forEach((u: IUser) => {
+                        assert.equal(u.type, "Customer");
+                    });
+                })
+                .end(done);
+        });
+
+        it("should return a page of Customers", (done) => {
+            app.get("/customers?limit=2")
+                .set("authorization", `Bearer ${rootToken}`)
+                .expect("content-type", /json/)
+                .expect(200)
+                .expect((res: any) => {
+                    assert.equal(res.body.total, 3);
+                    assert.equal(res.body.pages, 2);
+                    assert.equal(res.body.limit, 2);
+                    assert.equal(res.body.page, 1);
+                    assert.equal(res.body.docs.length, 2);
                     res.body.docs.forEach((u: IUser) => {
                         assert.equal(u.type, "Customer");
                     });
@@ -189,14 +223,14 @@ describe("Customer API routes", () => {
         });
 
         it("should return a single Customer", (done) => {
-            app.get(`/customers/${customer.id}`)
+            app.get(`/customers/${customer1.id}`)
                 .set("authorization", `Bearer ${rootToken}`)
                 .expect("content-type", /json/)
                 .expect(200)
                 .expect((res: any) => {
-                    assert.equal(res.body.docs.id, customer.id);
-                    assert.equal(res.body.docs.name, customer.name);
-                    assert.equal(res.body.docs.email, customer.email);
+                    assert.equal(res.body.docs.id, customer1.id);
+                    assert.equal(res.body.docs.name, customer1.name);
+                    assert.equal(res.body.docs.email, customer1.email);
                     assert.equal(res.body.docs.type, "Customer");
                 })
                 .end(done);
@@ -229,7 +263,7 @@ describe("Customer API routes", () => {
         });
 
         it("should return all Users for Customer", (done) => {
-            app.get(`/customers/${customer.id}/users`)
+            app.get(`/customers/${customer1.id}/users`)
                 .set("authorization", `Bearer ${rootToken}`)
                 .expect("content-type", /json/)
                 .expect(200)
@@ -237,7 +271,7 @@ describe("Customer API routes", () => {
                     assert.equal(res.body.docs.length, 3);
                     res.body.docs.forEach((u: IUser) => {
                         assert.equal(u.type, "User");
-                        assert.equal(u.customerId, customer.id);
+                        assert.equal(u.customerId, customer1.id);
                     });
                 })
                 .end(done);
@@ -321,13 +355,13 @@ describe("Customer API routes", () => {
                 name: Faker.name.findName(),
             };
 
-            app.patch(`/customers/${customer.id}`)
+            app.patch(`/customers/${customer1.id}`)
                 .send(data)
                 .set("authorization", `Bearer ${rootToken}`)
                 .expect("content-type", /json/)
                 .expect(200)
                 .expect((res: any) => {
-                    assert.equal(res.body.docs.id, customer.id);
+                    assert.equal(res.body.docs.id, customer1.id);
                     assert.equal(res.body.docs.email, data.email);
                     assert.equal(res.body.docs.name, data.name);
                     assert.equal(res.body.docs.type, "Customer");
@@ -363,13 +397,61 @@ describe("Customer API routes", () => {
         });
 
         it("should delete Customer", (done) => {
-            app.delete(`/customers/${customer.id}`)
+            app.delete(`/customers/${customer1.id}`)
                 .set("authorization", `Bearer ${rootToken}`)
                 .expect("content-type", /json/)
                 .expect(200)
                 .expect((res: any) => {
                     assert.equal(res.body.docs.type, "Customer");
-                    assert.equal(res.body.docs.id, customer.id);
+                    assert.equal(res.body.docs.id, customer1.id);
+                })
+                .end(done);
+        });
+    });
+
+    describe("GET /customers/:id/users", () => {
+        it("should return 401 `Unauthorized` if current User is not admin", (done) => {
+            app.get(`/customers/${customer1.id}/users`)
+                .set("authorization", `Bearer ${userToken}`)
+                .expect("content-type", /json/)
+                .expect(401)
+                .end(done);
+        });
+
+        it("should return all Users for a Customer", (done) => {
+            app.get(`/customers/${customer1.id}/users`)
+                .set("authorization", `Bearer ${rootToken}`)
+                .expect("content-type", /json/)
+                .expect(200)
+                .expect((res: any) => {
+                    assert.equal(res.body.total, 3);
+                    assert.equal(res.body.pages, 1);
+                    assert.equal(res.body.limit, 10);
+                    assert.equal(res.body.page, 1);
+                    assert.equal(res.body.docs.length, 3);
+                    res.body.docs.forEach((u: IUser) => {
+                        assert.equal(u.customerId, customer1.id);
+                        assert.equal(u.type, "User");
+                    });
+                })
+                .end(done);
+        });
+
+        it("should return a page of Users for a Customer", (done) => {
+            app.get(`/customers/${customer1.id}/users?limit=2`)
+                .set("authorization", `Bearer ${rootToken}`)
+                .expect("content-type", /json/)
+                .expect(200)
+                .expect((res: any) => {
+                    assert.equal(res.body.total, 3);
+                    assert.equal(res.body.pages, 2);
+                    assert.equal(res.body.limit, 2);
+                    assert.equal(res.body.page, 1);
+                    assert.equal(res.body.docs.length, 2);
+                    res.body.docs.forEach((u: IUser) => {
+                        assert.equal(u.customerId, customer1.id);
+                        assert.equal(u.type, "User");
+                    });
                 })
                 .end(done);
         });

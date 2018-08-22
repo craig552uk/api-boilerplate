@@ -1,4 +1,5 @@
 import * as mongoose from "mongoose";
+import * as mongoosePaginate from "mongoose-paginate";
 
 export interface ICustomer extends mongoose.Document {
     createdAt: Date;
@@ -27,5 +28,8 @@ export const CustomerSchema = new mongoose.Schema(
         },
 
     });
+
+// Apply pagination plugin to model
+CustomerSchema.plugin(mongoosePaginate);
 
 export const Customer = mongoose.model("Customer", CustomerSchema);
