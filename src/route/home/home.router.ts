@@ -12,7 +12,7 @@ const router = Router() as Router;
 router.all("/", (req, res) => {
     const metadata = require(join("..", "..", "..", "package.json"));
     res.jsonp({
-        data: {
+        docs: {
             author: metadata.author,
             description: metadata.description,
             name: metadata.name,

@@ -97,7 +97,7 @@ describe("Authentication API routes", () => {
         it("should return User object for authenticated User", async () => {
             const auth = await app.get("/login").auth(user.login, PASSWORD) as any;
             const whoami = await app.get("/whoami").set("Authorization", `Bearer ${auth.body.token}`) as any;
-            assert.deepEqual(whoami.body.data, JSON.parse(JSON.stringify(user)));
+            assert.deepEqual(whoami.body.docs, JSON.parse(JSON.stringify(user)));
         });
     });
 
@@ -113,7 +113,7 @@ describe("Authentication API routes", () => {
         it("should return User object for authenticated User", async () => {
             const auth = await app.get("/login").auth(user.login, PASSWORD) as any;
             const whoami = await app.get(`/whoami?jwt=${auth.body.token}`) as any;
-            assert.deepEqual(whoami.body.data, JSON.parse(JSON.stringify(user)));
+            assert.deepEqual(whoami.body.docs, JSON.parse(JSON.stringify(user)));
         });
     });
 });

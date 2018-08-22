@@ -19,7 +19,7 @@ router.all("/login", parseBasicAuth, (req, res, next) => {
             }
 
             if (user && user.checkPassword(req.password)) {
-                res.json({ token: user.getJWT(), type: "jwt" });
+                res.jsonp({ token: user.getJWT(), type: "jwt" });
             } else {
                 throw new Unauthorized("Incorrect username or password");
             }
@@ -34,7 +34,7 @@ router.all("/whoami", requireJWTAuth, (req, res, next) => {
     User.findById(req.jwt.id)
         .then((user) => {
             if (!user) { throw new BadRequest("No User exists with that ID"); }
-            res.json({ data: user });
+            res.jsonp({ docs: user });
         })
         .catch(next);
 });

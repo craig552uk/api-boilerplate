@@ -17,7 +17,7 @@ router.get("/", (req, res, next) => {
     // TODO #21 Add support for searching Customers
     // TODO #22 Add pagination support
     Customer.find({})
-        .then((customers) => res.jsonp({ data: customers }))
+        .then((customers) => res.jsonp({ docs: customers }))
         .catch(next);
 });
 
@@ -32,7 +32,7 @@ router.post("/", (req, res, next) => {
     };
 
     new Customer(data).save()
-        .then((customer) => res.jsonp({ data: customer }))
+        .then((customer) => res.jsonp({ docs: customer }))
         .catch((err) => {
             if (err.message.match(/E11000/)) { // Duplicate key error
                 next(new BadRequest("Email address already taken"));
@@ -47,7 +47,7 @@ router.get("/:id", (req, res, next) => {
     Customer.findOne(conditions)
         .then((customer) => {
             if (!customer) { throw new NotFound("No Customer exists with that ID"); }
-            res.json({ data: customer });
+            res.jsonp({ docs: customer });
         })
         .catch(next);
 });
@@ -67,7 +67,7 @@ router.patch("/:id", (req, res, next) => {
     Customer.findOneAndUpdate(conditions, data, { new: true })
         .then((customer) => {
             if (!customer) { throw new NotFound("No Customer exists with that ID"); }
-            res.json({ data: customer });
+            res.jsonp({ docs: customer });
         })
         .catch((err) => {
             if (err.message.match(/E11000/)) { // Duplicate key error
@@ -84,7 +84,7 @@ router.delete("/:id", (req, res, next) => {
     Customer.findOneAndRemove(conditions)
         .then((customer) => {
             if (!customer) { throw new NotFound("No Customer exists with that ID"); }
-            res.json({ data: customer });
+            res.jsonp({ docs: customer });
         })
         .catch(next);
 });
@@ -94,7 +94,7 @@ router.get("/:id/users", (req, res, next) => {
     // TODO #22 Add pagination support
     const conditions = { customerId: req.params.id };
     User.find(conditions)
-        .then((users) => res.jsonp({ data: users }))
+        .then((users) => res.jsonp({ docs: users }))
         .catch(next);
 });
 

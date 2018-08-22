@@ -12,7 +12,7 @@ describe("Home API routes", () => {
                 .expect(200)
                 .expect("content-type", /json/)
                 .expect({
-                    data: {
+                    docs: {
                         author: metadata.author,
                         description: metadata.description,
                         name: metadata.name,

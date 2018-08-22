@@ -17,7 +17,7 @@ router.get("/", (req, res, next) => {
     // TODO #22 Add pagination support
     const conditions = { customerId: req.jwt.cid };
     User.find(conditions)
-        .then((users) => res.jsonp({ data: users }))
+        .then((users) => res.jsonp({ docs: users }))
         .catch(next);
 });
 
@@ -38,7 +38,7 @@ router.post("/", (req, res, next) => {
     };
 
     new User(data).save()
-        .then((user) => res.jsonp({ data: user }))
+        .then((user) => res.jsonp({ docs: user }))
         .catch((err) => {
             if (err.message.match(/E11000/)) { // Duplicate key error
                 next(new BadRequest("Email address already taken"));
@@ -53,7 +53,7 @@ router.get("/:id", (req, res, next) => {
     User.findOne(conditions)
         .then((user) => {
             if (!user) { throw new NotFound("No User exists with that ID"); }
-            res.json({ data: user });
+            res.jsonp({ docs: user });
         })
         .catch(next);
 });
@@ -77,7 +77,7 @@ router.patch("/:id", (req, res, next) => {
     User.findOneAndUpdate(conditions, data, { new: true })
         .then((user) => {
             if (!user) { throw new NotFound("No User exists with that ID"); }
-            res.json({ data: user });
+            res.jsonp({ docs: user });
         })
         .catch((err) => {
             if (err.message.match(/E11000/)) { // Duplicate key error
@@ -93,7 +93,7 @@ router.delete("/:id", (req, res, next) => {
     User.findOneAndRemove(conditions)
         .then((user) => {
             if (!user) { throw new NotFound("No User exists with that ID"); }
-            res.json({ data: user });
+            res.jsonp({ docs: user });
         })
         .catch(next);
 });

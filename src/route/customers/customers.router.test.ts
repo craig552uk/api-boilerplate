@@ -77,8 +77,8 @@ describe("Customer API routes", () => {
                 .expect("content-type", /json/)
                 .expect(200)
                 .expect((res: any) => {
-                    assert.equal(res.body.data.length, 1);
-                    res.body.data.forEach((u: IUser) => {
+                    assert.equal(res.body.docs.length, 1);
+                    res.body.docs.forEach((u: IUser) => {
                         assert.equal(u.type, "Customer");
                     });
                 })
@@ -155,9 +155,9 @@ describe("Customer API routes", () => {
                 .expect("content-type", /json/)
                 .expect(200)
                 .expect((res: any) => {
-                    assert.equal(res.body.data.email, data.email);
-                    assert.equal(res.body.data.name, data.name);
-                    assert.equal(res.body.data.type, "Customer");
+                    assert.equal(res.body.docs.email, data.email);
+                    assert.equal(res.body.docs.name, data.name);
+                    assert.equal(res.body.docs.type, "Customer");
                 })
                 .end(done);
         });
@@ -194,10 +194,10 @@ describe("Customer API routes", () => {
                 .expect("content-type", /json/)
                 .expect(200)
                 .expect((res: any) => {
-                    assert.equal(res.body.data.id, customer.id);
-                    assert.equal(res.body.data.name, customer.name);
-                    assert.equal(res.body.data.email, customer.email);
-                    assert.equal(res.body.data.type, "Customer");
+                    assert.equal(res.body.docs.id, customer.id);
+                    assert.equal(res.body.docs.name, customer.name);
+                    assert.equal(res.body.docs.email, customer.email);
+                    assert.equal(res.body.docs.type, "Customer");
                 })
                 .end(done);
         });
@@ -234,8 +234,8 @@ describe("Customer API routes", () => {
                 .expect("content-type", /json/)
                 .expect(200)
                 .expect((res: any) => {
-                    assert.equal(res.body.data.length, 3);
-                    res.body.data.forEach((u: IUser) => {
+                    assert.equal(res.body.docs.length, 3);
+                    res.body.docs.forEach((u: IUser) => {
                         assert.equal(u.type, "User");
                         assert.equal(u.customerId, customer.id);
                     });
@@ -327,11 +327,11 @@ describe("Customer API routes", () => {
                 .expect("content-type", /json/)
                 .expect(200)
                 .expect((res: any) => {
-                    assert.equal(res.body.data.id, customer.id);
-                    assert.equal(res.body.data.email, data.email);
-                    assert.equal(res.body.data.name, data.name);
-                    assert.equal(res.body.data.type, "Customer");
-                    assert.notEqual(res.body.data.updatedAt, user.updatedAt);
+                    assert.equal(res.body.docs.id, customer.id);
+                    assert.equal(res.body.docs.email, data.email);
+                    assert.equal(res.body.docs.name, data.name);
+                    assert.equal(res.body.docs.type, "Customer");
+                    assert.notEqual(res.body.docs.updatedAt, user.updatedAt);
                 })
                 .end(done);
         });
@@ -368,8 +368,8 @@ describe("Customer API routes", () => {
                 .expect("content-type", /json/)
                 .expect(200)
                 .expect((res: any) => {
-                    assert.equal(res.body.data.type, "Customer");
-                    assert.equal(res.body.data.id, customer.id);
+                    assert.equal(res.body.docs.type, "Customer");
+                    assert.equal(res.body.docs.id, customer.id);
                 })
                 .end(done);
         });

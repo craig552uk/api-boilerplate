@@ -27,7 +27,7 @@ router.patch("/password", (req, res, next) => {
             user.password = req.body.newPassword1;
             return user.save();
         })
-        .then((user) => res.json({ data: user }))
+        .then((user) => res.jsonp({ docs: user }))
         .catch(next);
 });
 
@@ -38,7 +38,7 @@ router.get("/profile", (req, res, next) => {
     User.findById(req.jwt.id)
         .then((user) => {
             if (!user) { throw new Unauthorized("No User exists with that ID"); }
-            res.json({ data: user });
+            res.jsonp({ docs: user });
         })
         .catch(next);
 });
@@ -56,7 +56,7 @@ router.patch("/profile", (req, res, next) => {
     User.findOneAndUpdate({ _id: req.jwt.id }, data, { new: true })
         .then((user) => {
             if (!user) { throw new Unauthorized("No User exists with that ID"); }
-            res.json({ data: user });
+            res.jsonp({ docs: user });
         })
         .catch(next);
 });
@@ -71,7 +71,7 @@ router.get("/account", (req, res, next) => {
     Customer.findById(req.jwt.cid)
         .then((customer) => {
             if (!customer) { throw new Unauthorized("No Customer exists with that ID"); }
-            res.json({ data: customer });
+            res.jsonp({ docs: customer });
         })
         .catch(next);
 });
@@ -91,7 +91,7 @@ router.patch("/account", (req, res, next) => {
     Customer.findOneAndUpdate({ _id: req.jwt.cid }, data, { new: true })
         .then((customer) => {
             if (!customer) { throw new Unauthorized("No Customer exists with that ID"); }
-            res.json({ data: customer });
+            res.jsonp({ docs: customer });
         })
         .catch(next);
 });

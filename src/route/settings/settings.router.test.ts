@@ -50,15 +50,15 @@ describe("Settings API routes", () => {
                 .expect("content-type", /json/)
                 .expect((res: any) => {
                     const userJSON = JSON.parse(JSON.stringify(user)) as IUser;
-                    assert.equal(userJSON.admin, res.body.data.admin);
-                    assert.equal(userJSON.createdAt, res.body.data.createdAt);
-                    assert.equal(userJSON.customerId, res.body.data.customerId);
-                    assert.equal(userJSON.id, res.body.data.id);
-                    assert.equal(userJSON.login, res.body.data.login);
-                    assert.equal(userJSON.name, res.body.data.name);
-                    assert.equal(userJSON.root, res.body.data.root);
-                    assert.equal(userJSON.type, res.body.data.type);
-                    assert.equal(userJSON.updatedAt, res.body.data.updatedAt);
+                    assert.equal(userJSON.admin, res.body.docs.admin);
+                    assert.equal(userJSON.createdAt, res.body.docs.createdAt);
+                    assert.equal(userJSON.customerId, res.body.docs.customerId);
+                    assert.equal(userJSON.id, res.body.docs.id);
+                    assert.equal(userJSON.login, res.body.docs.login);
+                    assert.equal(userJSON.name, res.body.docs.name);
+                    assert.equal(userJSON.root, res.body.docs.root);
+                    assert.equal(userJSON.type, res.body.docs.type);
+                    assert.equal(userJSON.updatedAt, res.body.docs.updatedAt);
                 })
                 .end(done);
         });
@@ -144,15 +144,15 @@ describe("Settings API routes", () => {
                 .expect("content-type", /json/)
                 .expect((res: any) => {
                     const userJSON = JSON.parse(JSON.stringify(user)) as IUser;
-                    assert.equal(userJSON.admin, res.body.data.admin);
-                    assert.equal(userJSON.createdAt, res.body.data.createdAt);
-                    assert.equal(userJSON.customerId, res.body.data.customerId);
-                    assert.equal(userJSON.id, res.body.data.id);
-                    assert.equal(userJSON.login, res.body.data.login);
-                    assert.equal(userJSON.name, res.body.data.name);
-                    assert.equal(userJSON.root, res.body.data.root);
-                    assert.equal(userJSON.type, res.body.data.type);
-                    assert.notEqual(userJSON.updatedAt, res.body.data.updatedAt);
+                    assert.equal(userJSON.admin, res.body.docs.admin);
+                    assert.equal(userJSON.createdAt, res.body.docs.createdAt);
+                    assert.equal(userJSON.customerId, res.body.docs.customerId);
+                    assert.equal(userJSON.id, res.body.docs.id);
+                    assert.equal(userJSON.login, res.body.docs.login);
+                    assert.equal(userJSON.name, res.body.docs.name);
+                    assert.equal(userJSON.root, res.body.docs.root);
+                    assert.equal(userJSON.type, res.body.docs.type);
+                    assert.notEqual(userJSON.updatedAt, res.body.docs.updatedAt);
                 })
                 .end(done);
         });
@@ -181,17 +181,17 @@ describe("Settings API routes", () => {
                 .expect((res: any) => {
                     const userJSON = JSON.parse(JSON.stringify(user)) as IUser;
                     // should update permitted fields
-                    assert.equal(data.name, res.body.data.name);
-                    assert.notEqual(userJSON.updatedAt, res.body.data.updatedAt);
+                    assert.equal(data.name, res.body.docs.name);
+                    assert.notEqual(userJSON.updatedAt, res.body.docs.updatedAt);
 
                     // should not update other fields
-                    assert.equal(userJSON.admin, res.body.data.admin);
-                    assert.equal(userJSON.createdAt, res.body.data.createdAt);
-                    assert.equal(userJSON.customerId, res.body.data.customerId);
-                    assert.equal(userJSON.id, res.body.data.id);
-                    assert.equal(userJSON.login, res.body.data.login);
-                    assert.equal(userJSON.password, res.body.data.password);
-                    assert.equal(userJSON.root, res.body.data.root);
+                    assert.equal(userJSON.admin, res.body.docs.admin);
+                    assert.equal(userJSON.createdAt, res.body.docs.createdAt);
+                    assert.equal(userJSON.customerId, res.body.docs.customerId);
+                    assert.equal(userJSON.id, res.body.docs.id);
+                    assert.equal(userJSON.login, res.body.docs.login);
+                    assert.equal(userJSON.password, res.body.docs.password);
+                    assert.equal(userJSON.root, res.body.docs.root);
                 })
                 .end(done);
         });
@@ -213,11 +213,11 @@ describe("Settings API routes", () => {
                 .expect("content-type", /json/)
                 .expect((res: any) => {
                     const customerJSON = JSON.parse(JSON.stringify(customer)) as ICustomer;
-                    assert.equal(customerJSON.createdAt, res.body.data.createdAt);
-                    assert.equal(customerJSON.id, res.body.data.id);
-                    assert.equal(customerJSON.name, res.body.data.name);
-                    assert.equal(customerJSON.type, res.body.data.type);
-                    assert.equal(customerJSON.updatedAt, res.body.data.updatedAt);
+                    assert.equal(customerJSON.createdAt, res.body.docs.createdAt);
+                    assert.equal(customerJSON.id, res.body.docs.id);
+                    assert.equal(customerJSON.name, res.body.docs.name);
+                    assert.equal(customerJSON.type, res.body.docs.type);
+                    assert.equal(customerJSON.updatedAt, res.body.docs.updatedAt);
                 })
                 .end(done);
         });
@@ -249,13 +249,13 @@ describe("Settings API routes", () => {
                     const customerJSON = JSON.parse(JSON.stringify(customer)) as ICustomer;
 
                     // should update permitted fields
-                    assert.equal(data.name, res.body.data.name);
-                    assert.notEqual(customerJSON.updatedAt, res.body.data.updatedAt);
+                    assert.equal(data.name, res.body.docs.name);
+                    assert.notEqual(customerJSON.updatedAt, res.body.docs.updatedAt);
 
                     // should not update other fields
-                    assert.equal(customerJSON.createdAt, res.body.data.createdAt);
-                    assert.equal(customerJSON.id, res.body.data.id);
-                    assert.equal(customerJSON.type, res.body.data.type);
+                    assert.equal(customerJSON.createdAt, res.body.docs.createdAt);
+                    assert.equal(customerJSON.id, res.body.docs.id);
+                    assert.equal(customerJSON.type, res.body.docs.type);
                 })
                 .end(done);
         });
