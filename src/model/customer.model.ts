@@ -13,7 +13,7 @@ export interface ICustomer extends mongoose.Document {
 export const CustomerSchema = new mongoose.Schema(
     {
         email: { type: String, required: true, index: { unique: true } },
-        name: { type: String, required: true },
+        name: { type: String, required: true, index: true },
     },
     {
         timestamps: true,
@@ -31,9 +31,5 @@ export const CustomerSchema = new mongoose.Schema(
 
 // Apply pagination plugin to model
 CustomerSchema.plugin(mongoosePaginate);
-
-// Define indexes
-CustomerSchema.index({ name: 1 });
-CustomerSchema.index({ email: 1 });
 
 export const Customer = mongoose.model("Customer", CustomerSchema);

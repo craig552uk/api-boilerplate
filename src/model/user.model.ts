@@ -23,10 +23,10 @@ export interface IUser extends mongoose.Document {
 export const UserSchema = new mongoose.Schema(
     {
         admin: { type: Boolean, default: false },
-        customerId: { type: mongoose.Schema.Types.ObjectId, required: true },
+        customerId: { type: mongoose.Schema.Types.ObjectId, required: true, index: true },
         enabled: { type: Boolean, default: true },
         login: { type: String, required: true, index: { unique: true } },
-        name: { type: String, required: true },
+        name: { type: String, required: true, index: true },
         password: { type: String, required: true },
         root: { type: Boolean, default: false },
     },
@@ -47,10 +47,8 @@ export const UserSchema = new mongoose.Schema(
 // Apply pagination plugin to model
 UserSchema.plugin(mongoosePaginate);
 
-// Define indexes
-UserSchema.index({ customerId: 1 });
-UserSchema.index({ name: 1 });
-UserSchema.index({ login: 1 });
+// Compound index on IDs
+UserSchema.index({ customerId: 1, _id: 1 });
 
 /**
  * Securely hash passwords before saving in DB
