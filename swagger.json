@@ -1,214 +1,148 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "Feeatherback API",
-        "version": "0.0.1",
         "title": "Featherback API",
-        "contact": {
-            "email": "apiteam@featherback.co"
-        },
-        "license": {
-            "name": "Apache 2.0",
-            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-        }
+        "version": "0.0.1"
     },
-    "host": "petstore.swagger.io",
+    "servers": [
+        {
+            "url": "https://api.featherback.co",
+            "description": "Production API"
+        },
+        {
+            "url": "https://test-api.featherback.co",
+            "description": "Staging API"
+        },
+        {
+            "url": "http://localhost:1337",
+            "description": "Local Development API"
+        }
+    ],
     "schemes": [
         "https",
         "http"
     ],
-    "paths": {
-        "/user/{userId}": {
-            "get": {
-                "summary": "Get User by ID",
-                "description": "Returns a single User object or 404 if the User does not exist",
-                "operationId": "user-id-get",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "name": "username",
-                        "in": "path",
-                        "description": "The name that needs to be fetched. Use user1 for testing. ",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "schema": {
-                            "$ref": "#/definitions/User"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid username supplied"
-                    },
-                    "404": {
-                        "description": "User not found"
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "user"
-                ],
-                "summary": "Updated user",
-                "description": "This can only be done by the logged in user.",
-                "operationId": "updateUser",
-                "produces": [
-                    "application/xml",
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "name": "username",
-                        "in": "path",
-                        "description": "name that need to be updated",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "Updated user object",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/User"
-                        }
-                    }
-                ],
-                "responses": {
-                    "400": {
-                        "description": "Invalid user supplied"
-                    },
-                    "404": {
-                        "description": "User not found"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "user"
-                ],
-                "summary": "Delete user",
-                "description": "This can only be done by the logged in user.",
-                "operationId": "deleteUser",
-                "produces": [
-                    "application/xml",
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "name": "username",
-                        "in": "path",
-                        "description": "The name that needs to be deleted",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "400": {
-                        "description": "Invalid username supplied"
-                    },
-                    "404": {
-                        "description": "User not found"
-                    }
-                }
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
             }
         }
     },
-    "definitions": {
-        "UserResponse": {
-			"type": "object",
-			"properties": {
-				"docs": {
-					"type": "object",
-					"properties": {
-						"admin": {
-							"type": "boolean",
-							"example": false
-						},
-						"createdAt": {
-							"type": "string",
-							"example": "2018-08-23T15:48:21.259Z"
-						},
-						"customerId": {
-							"type": "string",
-							"example": "000000000000000000000000"
-						},
-						"enabled": {
-							"type": "boolean",
-							"example": true
-						},
-						"id": {
-							"type": "string",
-							"example": "000000000000000000000000"
-						},
-						"login": {
-							"type": "string",
-							"example": "jimbo.jones@example.com"
-						},
-						"name": {
-							"type": "string",
-							"example": "Jimbo Jones"
-						},
-						"password": {
-							"type": "string",
-							"example": "Passw0rd"
-						},
-						"root": {
-							"type": "boolean",
-							"example": false
-						},
-						"type": {
-							"type": "string",
-							"example": "User"
-						},
-						"updatedAt": {
-							"type": "string",
-							"example": "2018-08-23T15:48:21.259Z"
-						}
-					}
-				}
-			}
-		},
-		"400 Bad Request":{
-			"type": "object",
-			"properties": {
-				"message":{
-					"type":"string",
-					"example": "Field Required"
-				}
-			}
-		},
-		"403 Unauthorized":{
-			"type": "object",
-			"properties": {
-				"message":{
-					"type":"string",
-					"example": "Unauthorized"
-				}
-			}
-		},
-		"404 Not Found":{
-			"type": "object",
-			"properties": {
-				"message":{
-					"type":"string",
-					"example": "Record does not exist with that ID"
-				}
-			}
-		},
-		"500 Internal Server Error":{
-			"type": "object",
-			"properties": {
-				"message":{
-					"type":"string",
-					"example": "Danger Will Robinson!"
-				}
-			}
-		}
+    "paths": {
+        "/": {
+            "get": {
+                "description": "Get metadata about the API. Useful for debugging."
+            }
+        },
+        "/teapot": {
+            "get": {
+                "description": "Get an example handled error response. Useful for debugging."
+            }
+        },
+        "/error": {
+            "get": {
+                "description": "Get an example unhandled error thrown with the API. Useful for debugging."
+            }
+        },
+        "/login": {
+            "get": {
+                "description": "Authenticates a User. Returns a valid JWT if authenticated or Unauthorized if not."
+            }
+        },
+        "/whoami": {
+            "get": {
+                "description": "Get information for the current authenticated User."
+            }
+        },
+        "/signup": {
+            "post": {
+                "description": "Create a new Customer and User in the system with default configuration. The Customer and User are registered with the same email address. The User has Admin privilages over the Customer."
+            }
+        },
+        "/customers": {
+            "get": {
+                "description": "Search Customers registered on the platform. Root Users only."
+            },
+            "post": {
+                "description": "Add a new customer to the platform. Root Users only."
+            }
+        },
+        "/customers/{customerId}": {
+            "get": {
+                "description": "Get information for a single Customer. Root and Admin Users only."
+            },
+            "patch": {
+                "description": "Update a Customer. Root Users only."
+            },
+            "delete": {
+                "description": "Delete a Customer. Root Users only."
+            }
+        },
+        "/customers/{customerId}/users": {
+            "get": {
+                "description": "Search Users belonging to a Customer. Root Users only."
+            }
+        },
+        "/notifications": {
+            "get": {
+                "description": "Get all Notifications belonging to the current authenticated User in reverse time order."
+            },
+            "post": {
+                "description": "Create a new Notification for the current authenticated User."
+            }
+        },
+        "/notifications/{notificationId}": {
+            "delete": {
+                "description": "Delete (dismiss) a Notification belonging to the current authenticated User."
+            }
+        },
+        "/settings/password": {
+            "patch": {
+                "description": "Chnge the password for the current authenticated User."
+            }
+        },
+        "/settings/profile": {
+            "get": {
+                "description": "Get the User profile for the current authenticated User."
+            },
+            "patch": {
+                "description": "Update the User profile for the current authenticated User."
+            }
+        },
+        "/settings/account": {
+            "get": {
+                "description": "Get the Customer account information for the current authenticated User. Admin only."
+            },
+            "patch": {
+                "description": "Update the Customer account inormation for the current authenticated User. Admin only."
+            }
+        },
+        "/users": {
+            "get": {
+                "description": "Search all Users belonging to the Customer of the current authenticated User. Admin only."
+            },
+            "post": {
+                "description": "Create a new User for the Customer of the current authenticated User. Admin only."
+            }
+        },
+        "/users/{userId}": {
+            "get": {
+                "description": "Get a User profile belonging to the current authenticated Customer. Admin only."
+            },
+            "patch": {
+                "description": "Update a User profile belonging to the current authenticated Customer. Admin only."
+            },
+            "delete": {
+                "description": "Delete a User belonging to the current authenticated Customer. Admin only."
+            }
+        },
+        "/users/{userId}/impersonate": {
+            "get": {
+                "description": "Get a valid JWT for a User to impersnate them on the platform for support and diagnosis. Root only."
+            }
+        }
     }
 }
