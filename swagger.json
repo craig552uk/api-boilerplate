@@ -22,151 +22,713 @@
         "https",
         "http"
     ],
-    "components": {
-        "securitySchemes": {
-            "bearerAuth": {
-                "type": "http",
-                "scheme": "bearer",
-                "bearerFormat": "JWT"
-            }
-        }
-    },
     "paths": {
         "/": {
             "get": {
                 "summary": "Get metadata about the API",
-                "description": "This is a utility endpoint useful for development, testing and diagnosis."
+                "description": "This is a utility endpoint useful for development, testing and diagnosis.",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
             }
         },
         "/teapot": {
             "get": {
                 "summary": "Get an example handled error response",
-                "description": "This is a utility endpoint useful for development, testing and diagnosis."
+                "description": "This is a utility endpoint useful for development, testing and diagnosis.",
+                "responses": {
+                    "418": {
+                        "description": "I'm a teapot"
+                    }
+                }
             }
         },
         "/error": {
             "get": {
                 "summary": "Get an example unhandled error thrown with the API",
-                "description": "This is a utility endpoint useful for development, testing and diagnosis."
+                "description": "This is a utility endpoint useful for development, testing and diagnosis.",
+                "responses": {
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
             }
         },
         "/login": {
             "get": {
                 "summary": "Authenticates a User returning a JWT",
-                "description": "Authenticated endpoints require a valid JWT to use."
+                "description": "Authenticated endpoints require a valid JWT to use.",
+                "responses": {
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error400"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error401"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "OK"
+                    }
+                }
             }
         },
         "/whoami": {
             "get": {
-                "summary": "Get the profile of the authenticated User"
+                "summary": "Get the profile of the authenticated User",
+                "responses": {
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error400"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "OK"
+                    }
+                }
             }
         },
         "/signup": {
             "post": {
                 "summary": "Create a new Customer and User",
-                "description": "Create a new Customer and User in the system with default configuration. The Customer and User are registered with the same email address. The User has Admin privilages over the Customer."
+                "description": "Create a new Customer and User in the system with default configuration. The Customer and User are registered with the same email address. The User has Admin privilages over the Customer.",
+                "responses": {
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error400"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "OK"
+                    }
+                }
             }
         },
         "/customers": {
             "get": {
                 "summary": "Search Customers",
-                "descripton": "Search Customers registered on the platform. Root Users only."
+                "descripton": "Search Customers registered on the platform. Root Users only.",
+                "responses": {
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error401"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "OK"
+                    }
+                }
             },
             "post": {
                 "summary": "Create a new Customer",
-                "description": "Add a new Customer to the platform. Root Users only."
+                "description": "Add a new Customer to the platform. Root Users only.",
+                "responses": {
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error400"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error401"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "OK"
+                    }
+                }
             }
         },
         "/customers/{customerId}": {
             "get": {
                 "summary": "Get account information for a Customer",
-                "description": "Get information for a single Customer. Root and Admin Users only."
+                "description": "Get information for a single Customer. Root and Admin Users only.",
+                "responses": {
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error401"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error404"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "OK"
+                    }
+                }
             },
             "patch": {
                 "summary": "Update a Customer",
-                "description": "Update a Customer. Root Users only."
+                "description": "Update a Customer. Root Users only.",
+                "responses": {
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error400"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error401"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error404"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "OK"
+                    }
+                }
             },
             "delete": {
                 "summary": "Delete a Customer",
-                "description": "Delete a Customer. Root Users only."
+                "description": "Delete a Customer. Root Users only.",
+                "responses": {
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error401"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error404"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "OK"
+                    }
+                }
             }
         },
         "/customers/{customerId}/users": {
             "get": {
                 "summary": "Search Users",
-                "description": "Search Users belonging to a Customer. Root Users only."
+                "description": "Search Users belonging to a Customer. Root Users only.",
+                "responses": {
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error401"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error404"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "OK"
+                    }
+                }
             }
         },
         "/notifications": {
             "get": {
                 "summary": "Get all Notifications",
-                "description": "Get all Notifications belonging to the current authenticated User in reverse time order."
+                "description": "Get all Notifications belonging to the current authenticated User in reverse time order.",
+                "responses": {
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error401"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "OK"
+                    }
+                }
             },
             "post": {
                 "summary": "Create a new Notification",
-                "description": "Create a new Notification for the current authenticated User."
+                "description": "Create a new Notification for the current authenticated User.",
+                "responses": {
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error400"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error401"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "OK"
+                    }
+                }
             }
         },
         "/notifications/{notificationId}": {
             "delete": {
                 "summary": "Delete a notification",
-                "description": "Delete (dismiss) a Notification belonging to the current authenticated User."
+                "description": "Delete (dismiss) a Notification belonging to the current authenticated User.",
+                "responses": {
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error401"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error404"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "OK"
+                    }
+                }
             }
         },
         "/settings/password": {
             "patch": {
                 "summary": "Change the User password",
-                "description": "Change the password for the current authenticated User."
+                "description": "Change the password for the current authenticated User.",
+                "responses": {
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error400"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error401"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "OK"
+                    }
+                }
             }
         },
         "/settings/profile": {
             "get": {
                 "summary": "Get the User profile",
-                "description": "Get the User profile for the current authenticated User."
+                "description": "Get the User profile for the current authenticated User.",
+                "responses": {
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error401"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "OK"
+                    }
+                }
             },
             "patch": {
                 "summary": "Update the User profile",
-                "description": "Update the User profile for the current authenticated User."
+                "description": "Update the User profile for the current authenticated User.",
+                "responses": {
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error400"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error401"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "OK"
+                    }
+                }
             }
         },
         "/settings/account": {
             "get": {
                 "summary": "Get the Customer account",
-                "description": "Get the Customer account information for the current authenticated User. Admin only."
+                "description": "Get the Customer account information for the current authenticated User. Admin only.",
+                "responses": {
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error401"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "OK"
+                    }
+                }
             },
             "patch": {
                 "summary": "Update the Customer account",
-                "description": "Update the Customer account inormation for the current authenticated User. Admin only."
+                "description": "Update the Customer account inormation for the current authenticated User. Admin only.",
+                "responses": {
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error400"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error401"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "OK"
+                    }
+                }
             }
         },
         "/users": {
             "get": {
                 "summary": "Search Users",
-                "description": "Search all Users belonging to the Customer of the current authenticated User. Admin only."
+                "description": "Search all Users belonging to the Customer of the current authenticated User. Admin only.",
+                "responses": {
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error401"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "OK"
+                    }
+                }
             },
             "post": {
                 "summary": "Create a new User",
-                "description": "Create a new User for the Customer of the current authenticated User. Admin only."
+                "description": "Create a new User for the Customer of the current authenticated User. Admin only.",
+                "responses": {
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error400"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error401"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "OK"
+                    }
+                }
             }
         },
         "/users/{userId}": {
             "get": {
                 "summary": "Get a User profile",
-                "description": "Get a User profile belonging to the current authenticated Customer. Admin only."
+                "description": "Get a User profile belonging to the current authenticated Customer. Admin only.",
+                "responses": {
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error401"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error404"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "OK"
+                    }
+                }
             },
             "patch": {
                 "summary": "Update a User profile",
-                "description": "Update a User profile belonging to the current authenticated Customer. Admin only."
+                "description": "Update a User profile belonging to the current authenticated Customer. Admin only.",
+                "responses": {
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error400"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error401"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error404"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "OK"
+                    }
+                }
             },
             "delete": {
                 "summary": "Delete a User",
-                "description": "Delete a User belonging to the current authenticated Customer. Admin only."
+                "description": "Delete a User belonging to the current authenticated Customer. Admin only.",
+                "responses": {
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error401"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error404"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "OK"
+                    }
+                }
             }
         },
         "/users/{userId}/impersonate": {
             "get": {
                 "summary": "Impersonate a User",
-                "description": "Get a valid JWT for a User to impersnate them on the platform for support and diagnosis. Root only."
+                "description": "Get a valid JWT for a User to impersnate them on the platform for support and diagnosis. Root only.",
+                "responses": {
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error401"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error404"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Error400": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "Bad Request"
+                    }
+                }
+            },
+            "Error401": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    }
+                }
+            },
+            "Error404": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "Not Found"
+                    }
+                }
             }
         }
     }
