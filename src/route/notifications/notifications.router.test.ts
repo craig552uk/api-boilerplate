@@ -13,9 +13,9 @@ const PASSWORD = "Passw0rd";
 let customer: ICustomer;
 let user: IUser;
 let userToken: string;
-let notifications: INotification[] = [];
+const notifications: INotification[] = [];
 
-describe("User API routes", () => {
+describe("Notifications API routes", () => {
 
     before(async () => {
         customer = await new Customer({
