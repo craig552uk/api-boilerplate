@@ -1,495 +1,610 @@
 {
-    "swagger": "2.0",
-    "info": {
-        "title": "Featherback API",
-        "version": "0.0.1"
-    },
-    "servers": [
-        {
-            "url": "https://api.featherback.co",
-            "description": "Production API"
-        },
-        {
-            "url": "https://test-api.featherback.co",
-            "description": "Staging API"
-        },
-        {
-            "url": "http://localhost:1337",
-            "description": "Local Development API"
-        }
-    ],
-    "schemes": [
-        "https",
-        "http"
-    ],
-    "paths": {
-        "/": {
-            "get": {
-                "tags": [
-                    "Utility Endpoints"
-                ],
-                "summary": "Get metadata about the API",
-                "description": "This is a utility endpoint useful for development, testing and diagnosis.",
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
-        "/teapot": {
-            "get": {
-                "tags": [
-                    "Utility Endpoints"
-                ],
-                "summary": "Get an example handled error response",
-                "description": "This is a utility endpoint useful for development, testing and diagnosis.",
-                "responses": {
-                    "418": {
-                        "description": "I'm a teapot"
-                    }
-                }
-            }
-        },
-        "/error": {
-            "get": {
-                "tags": [
-                    "Utility Endpoints"
-                ],
-                "summary": "Get an example unhandled error thrown with the API",
-                "description": "This is a utility endpoint useful for development, testing and diagnosis.",
-                "responses": {
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            }
-        },
-        "/login": {
-            "get": {
-                "tags": [
-                    "Authentication"
-                ],
-                "summary": "Authenticates a User returning a JWT",
-                "description": "Authenticated endpoints require a valid JWT to use.",
-                "responses": {
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
-        "/whoami": {
-            "get": {
-                "tags": [
-                    "Authentication"
-                ],
-                "summary": "Get the profile of the authenticated User",
-                "responses": {
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
-        "/signup": {
-            "post": {
-                "tags": [
-                    "Registration"
-                ],
-                "summary": "Create a new Customer and User",
-                "description": "Create a new Customer and User in the system with default configuration. The Customer and User are registered with the same email address. The User has Admin privilages over the Customer.",
-                "responses": {
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
-        "/customers": {
-            "get": {
-                "tags": [
-                    "Customers"
-                ],
-                "summary": "Search Customers",
-                "descripton": "Search Customers registered on the platform. Root Users only.",
-                "responses": {
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Customers"
-                ],
-                "summary": "Create a new Customer",
-                "description": "Add a new Customer to the platform. Root Users only.",
-                "responses": {
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
-        "/customers/{customerId}": {
-            "get": {
-                "tags": [
-                    "Customers"
-                ],
-                "summary": "Get account information for a Customer",
-                "description": "Get information for a single Customer. Root and Admin Users only.",
-                "responses": {
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "404": {
-                        "description": "Not Found"
-                    },
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            },
-            "patch": {
-                "tags": [
-                    "Customers"
-                ],
-                "summary": "Update a Customer",
-                "description": "Update a Customer. Root Users only.",
-                "responses": {
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "404": {
-                        "description": "Not Found"
-                    },
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Customers"
-                ],
-                "summary": "Delete a Customer",
-                "description": "Delete a Customer. Root Users only.",
-                "responses": {
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "404": {
-                        "description": "Not Found"
-                    },
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
-        "/customers/{customerId}/users": {
-            "get": {
-                "tags": [
-                    "Customers"
-                ],
-                "summary": "Search Users",
-                "description": "Search Users belonging to a Customer. Root Users only.",
-                "responses": {
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "404": {
-                        "description": "Not Found"
-                    },
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
-        "/notifications": {
-            "get": {
-                "tags": [
-                    "Notifications"
-                ],
-                "summary": "Get all Notifications",
-                "description": "Get all Notifications belonging to the current authenticated User in reverse time order.",
-                "responses": {
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Notifications"
-                ],
-                "summary": "Create a new Notification",
-                "description": "Create a new Notification for the current authenticated User.",
-                "responses": {
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
-        "/notifications/{notificationId}": {
-            "delete": {
-                "tags": [
-                    "Notifications"
-                ],
-                "summary": "Delete a notification",
-                "description": "Delete (dismiss) a Notification belonging to the current authenticated User.",
-                "responses": {
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "404": {
-                        "description": "Not Found"
-                    },
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
-        "/settings/password": {
-            "patch": {
-                "tags": [
-                    "Settings"
-                ],
-                "summary": "Change the User password",
-                "description": "Change the password for the current authenticated User.",
-                "responses": {
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
-        "/settings/profile": {
-            "get": {
-                "tags": [
-                    "Settings"
-                ],
-                "summary": "Get the User profile",
-                "description": "Get the User profile for the current authenticated User.",
-                "responses": {
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            },
-            "patch": {
-                "tags": [
-                    "Settings"
-                ],
-                "summary": "Update the User profile",
-                "description": "Update the User profile for the current authenticated User.",
-                "responses": {
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
-        "/settings/account": {
-            "get": {
-                "tags": [
-                    "Settings"
-                ],
-                "summary": "Get the Customer account",
-                "description": "Get the Customer account information for the current authenticated User. Admin only.",
-                "responses": {
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            },
-            "patch": {
-                "tags": [
-                    "Settings"
-                ],
-                "summary": "Update the Customer account",
-                "description": "Update the Customer account inormation for the current authenticated User. Admin only.",
-                "responses": {
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
-        "/users": {
-            "get": {
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Search Users",
-                "description": "Search all Users belonging to the Customer of the current authenticated User. Admin only.",
-                "responses": {
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Create a new User",
-                "description": "Create a new User for the Customer of the current authenticated User. Admin only.",
-                "responses": {
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
-        "/users/{userId}": {
-            "get": {
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Get a User profile",
-                "description": "Get a User profile belonging to the current authenticated Customer. Admin only.",
-                "responses": {
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "404": {
-                        "description": "Not Found"
-                    },
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            },
-            "patch": {
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Update a User profile",
-                "description": "Update a User profile belonging to the current authenticated Customer. Admin only.",
-                "responses": {
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "404": {
-                        "description": "Not Found"
-                    },
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Delete a User",
-                "description": "Delete a User belonging to the current authenticated Customer. Admin only.",
-                "responses": {
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "404": {
-                        "description": "Not Found"
-                    },
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
-        "/users/{userId}/impersonate": {
-            "get": {
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Impersonate a User",
-                "description": "Get a valid JWT for a User to impersnate them on the platform for support and diagnosis. Root only.",
-                "responses": {
-                    "401": {
-                        "description": "Unauthorized"
-                    },
-                    "404": {
-                        "description": "Not Found"
-                    },
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        }
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Featherback API",
+    "version": "0.0.1"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:1337",
+      "description": "Local Development API"
     }
+  ],
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "Utility Endpoints"
+        ],
+        "summary": "Get metadata about the API",
+        "description": "This is a utility endpoint useful for development, testing and diagnosis.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/teapot": {
+      "get": {
+        "tags": [
+          "Utility Endpoints"
+        ],
+        "summary": "Get an example handled error response",
+        "description": "This is a utility endpoint useful for development, testing and diagnosis.",
+        "responses": {
+          "418": {
+            "description": "I'm a teapot"
+          }
+        }
+      }
+    },
+    "/error": {
+      "get": {
+        "tags": [
+          "Utility Endpoints"
+        ],
+        "summary": "Get an example unhandled error thrown with the API",
+        "description": "This is a utility endpoint useful for development, testing and diagnosis.",
+        "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/signup": {
+      "post": {
+        "tags": [
+          "Registration"
+        ],
+        "summary": "Create a new Customer and User",
+        "description": "Create a new Customer and User in the system with default configuration. The Customer and User are registered with the same email address. The User has Admin privilages over the Customer.",
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/login": {
+      "get": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Authenticates a User returning a JWT",
+        "description": "Authenticated endpoints require a valid JWT to use.",
+        "security": [
+          {
+            "Basic Authentication": []
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/whoami": {
+      "get": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Get the profile of the authenticated User",
+        "security": [
+          {
+            "JWT Authentication": []
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/customers": {
+      "get": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Search Customers",
+        "descripton": "Search Customers registered on the platform. Root Users only.",
+        "security": [
+          {
+            "JWT Authentication": []
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Create a new Customer",
+        "description": "Add a new Customer to the platform. Root Users only.",
+        "security": [
+          {
+            "JWT Authentication": []
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/customers/{customerId}": {
+      "get": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Get account information for a Customer",
+        "description": "Get information for a single Customer. Root and Admin Users only.",
+        "security": [
+          {
+            "JWT Authentication": []
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Update a Customer",
+        "description": "Update a Customer. Root Users only.",
+        "security": [
+          {
+            "JWT Authentication": []
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Delete a Customer",
+        "description": "Delete a Customer. Root Users only.",
+        "security": [
+          {
+            "JWT Authentication": []
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/customers/{customerId}/users": {
+      "get": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Search Users",
+        "description": "Search Users belonging to a Customer. Root Users only.",
+        "security": [
+          {
+            "JWT Authentication": []
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/notifications": {
+      "get": {
+        "tags": [
+          "Notifications"
+        ],
+        "summary": "Get all Notifications",
+        "description": "Get all Notifications belonging to the current authenticated User in reverse time order.",
+        "security": [
+          {
+            "JWT Authentication": []
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Notifications"
+        ],
+        "summary": "Create a new Notification",
+        "description": "Create a new Notification for the current authenticated User.",
+        "security": [
+          {
+            "JWT Authentication": []
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/notifications/{notificationId}": {
+      "delete": {
+        "tags": [
+          "Notifications"
+        ],
+        "summary": "Delete a notification",
+        "description": "Delete (dismiss) a Notification belonging to the current authenticated User.",
+        "security": [
+          {
+            "JWT Authentication": []
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/settings/password": {
+      "patch": {
+        "tags": [
+          "Settings"
+        ],
+        "summary": "Change the User password",
+        "description": "Change the password for the current authenticated User.",
+        "security": [
+          {
+            "JWT Authentication": []
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/settings/profile": {
+      "get": {
+        "tags": [
+          "Settings"
+        ],
+        "summary": "Get the User profile",
+        "description": "Get the User profile for the current authenticated User.",
+        "security": [
+          {
+            "JWT Authentication": []
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Settings"
+        ],
+        "summary": "Update the User profile",
+        "description": "Update the User profile for the current authenticated User.",
+        "security": [
+          {
+            "JWT Authentication": []
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/settings/account": {
+      "get": {
+        "tags": [
+          "Settings"
+        ],
+        "summary": "Get the Customer account",
+        "description": "Get the Customer account information for the current authenticated User. Admin only.",
+        "security": [
+          {
+            "JWT Authentication": []
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Settings"
+        ],
+        "summary": "Update the Customer account",
+        "description": "Update the Customer account inormation for the current authenticated User. Admin only.",
+        "security": [
+          {
+            "JWT Authentication": []
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Search Users",
+        "description": "Search all Users belonging to the Customer of the current authenticated User. Admin only.",
+        "security": [
+          {
+            "JWT Authentication": []
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Create a new User",
+        "description": "Create a new User for the Customer of the current authenticated User. Admin only.",
+        "security": [
+          {
+            "JWT Authentication": []
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/users/{userId}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get a User profile",
+        "description": "Get a User profile belonging to the current authenticated Customer. Admin only.",
+        "security": [
+          {
+            "JWT Authentication": []
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Update a User profile",
+        "description": "Update a User profile belonging to the current authenticated Customer. Admin only.",
+        "security": [
+          {
+            "JWT Authentication": []
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Delete a User",
+        "description": "Delete a User belonging to the current authenticated Customer. Admin only.",
+        "security": [
+          {
+            "JWT Authentication": []
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/users/{userId}/impersonate": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Impersonate a User",
+        "description": "Get a valid JWT for a User to impersnate them on the platform for support and diagnosis. Root only.",
+        "security": [
+          {
+            "JWT Authentication": []
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "Basic Authentication": {
+        "type": "http",
+        "scheme": "basic"
+      },
+      "JWT Authentication": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
 }
