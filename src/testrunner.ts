@@ -41,7 +41,11 @@ before((done: MochaDone) => {
  * Disconnect from Mongo DB once all tests are finished
  */
 after((done: MochaDone) => {
-    mongoose.disconnect();
-    console.log("> Disconnected from MongoDB");
-    done();
+    mongoose.connection.db.dropDatabase()
+        .then(() => mongoose.disconnect())
+        .then(() => {
+            console.log("> Disconnected from MongoDB");
+            done();
+        })
+        .catch(done);
 });
