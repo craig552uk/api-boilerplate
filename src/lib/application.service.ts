@@ -6,6 +6,7 @@ import * as express from "express";
 import { NextFunction, Request, Response, Router } from "express";
 import { HttpError, InternalServerError, NotFound } from "http-errors";
 import { CastError } from "mongoose";
+import * as SwaggerUI from "swagger-ui-express";
 import { LoggerMiddleware } from "../middleware/logger.middleware";
 import * as ApplicationRoutes from "../route";
 import { LoggerService } from "./logger.service";
@@ -34,6 +35,10 @@ export class ApplicationService {
 
         // Apply all Application Routes
         this.instance.use(ApplicationRoutes);
+
+        // Serve API documentation
+        const swaggerDoc = require("../../swagger.json");
+        this.instance.use("/api-docs", SwaggerUI.serve, SwaggerUI.setup(swaggerDoc));
 
         // 404 Not Found
         // If no previous route handler has matched the request, this one is called
