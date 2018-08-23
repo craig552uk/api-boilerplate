@@ -1,7 +1,6 @@
 import * as assert from "assert";
 import * as Faker from "faker";
 import "mocha";
-import * as supertest from "supertest";
 import * as JWTService from "../../lib/jwt.service";
 import { Customer, ICustomer } from "../../model/customer.model";
 import { IUser, User } from "../../model/user.model";
