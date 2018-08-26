@@ -1,6 +1,6 @@
 {
   "name": "api.featherback.co",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Featherback API",
   "main": "index.js",
   "scripts": {
